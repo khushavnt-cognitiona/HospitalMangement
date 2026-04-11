@@ -1,0 +1,284 @@
+/* BookAppointment.css - Clean Premium Medical Theme */
+
+.booking-page-container {
+  min-height: 100vh;
+  background: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.05) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, rgba(13, 148, 136, 0.03) 0, transparent 50%);
+  padding: 2rem 0;
+  position: relative;
+}
+
+/* Glassmorphism Card for Booking steps */
+.glass-booking-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2rem;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+    0 20px 25px -5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.booking-header {
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  padding: 2rem;
+  color: white;
+  text-align: center;
+}
+
+.booking-header h4 {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+/* Step Indicators */
+.step-indicator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 2.5rem;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.step-item.active {
+  opacity: 1;
+}
+
+.step-dot {
+  width: 10px;
+  height: 10px;
+  background: #0284c7;
+  border-radius: 50%;
+}
+
+.step-label {
+  color: #1e293b;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.booking-body {
+  padding: 2.5rem;
+  color: #1e293b;
+}
+
+/* Specialist Cards */
+.specialist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.specialist-card-premium {
+  background: white;
+  border: 2px solid #f1f5f9;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.specialist-card-premium:hover {
+  border-color: #0284c7;
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.specialist-card-premium.selected {
+  background: #f0f9ff;
+  border-color: #0284c7;
+}
+
+.selection-check {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: #0284c7;
+  font-size: 1.2rem;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s ease;
+}
+
+.specialist-card-premium.selected .selection-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Premium Inputs */
+.label-premium {
+  font-weight: 800;
+  color: #64748b;
+  font-size: 0.7rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.premium-input {
+  background: #ffffff !important;
+  border: 2px solid #f1f5f9 !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem 1.25rem !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+.premium-input:focus {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1) !important;
+}
+
+/* Slots UI */
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.slot-chip {
+  padding: 12px;
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+  text-align: center;
+  color: #64748b;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.slot-chip:hover:not(.disabled) {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.slot-chip.selected {
+  background: #0284c7;
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3);
+}
+
+/* Premium Pass (Confirmation) */
+.premium-pass-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.digital-ticket {
+  background: white;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 2.5rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-header-gradient {
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: white;
+}
+
+.ticket-notch-container {
+  background: white;
+  position: relative;
+  height: 40px;
+  margin: -20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ticket-notch-left, .ticket-notch-right {
+  width: 40px;
+  height: 40px;
+  background: #f8fafc; /* Match page background */
+  border-radius: 50%;
+}
+
+.ticket-notch-left { margin-left: -20px; }
+.ticket-notch-right { margin-right: -20px; }
+
+.ticket-dashed-line {
+  flex-grow: 1;
+  border-top: 2px dashed #f1f5f9;
+  margin: 0 10px;
+}
+
+.pass-body {
+  padding: 2.5rem;
+}
+
+.pass-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.info-item label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.info-item span {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+/* Premium Buttons */
+.btn-premium-grad {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: none;
+  border-radius: 100px;
+  padding: 1.25rem 2.5rem;
+  color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-premium-grad:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(2, 132, 199, 0.3);
+}
+
+@media (max-width: 576px) {
+  .pass-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
