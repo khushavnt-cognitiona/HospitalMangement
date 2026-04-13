@@ -1,6 +1,3 @@
 {
-  "buildCommand": "npm run build --prefix hms-frontend",
-  "outputDirectory": "hms-frontend/dist",
-  "installCommand": "npm install --prefix hms-frontend",
-  "framework": "vite"
+  "comment": "Configuration moved to hms-frontend/vercel.json"
 }
