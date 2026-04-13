@@ -1,12 +1,23 @@
-# Use OpenJDK 21 to match the project's java.version in pom.xml
-FROM openjdk:21-jdk-slim
-
-# Set the working directory inside the container
+# Stage 1: Build the application using Maven
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy the compiled executable JAR file into the container
-# This assumes you have run 'mvn clean package' locally first
-COPY target/*.jar app.jar
+# Copy the pom.xml and source code
+COPY pom.xml .
+COPY src ./src
 
-# Define the command to run the application
+# Build the application and create the JAR file
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application using a lightweight JRE
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+
+# Copy the JAR file from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
