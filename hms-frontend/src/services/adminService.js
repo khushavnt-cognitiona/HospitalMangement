@@ -1,14 +1,35 @@
 import axiosInstance from '../api/axiosInstance';
 
 const adminService = {
-    getStats: () =>
-        axiosInstance.get('/api/admin/stats').then((r) => r.data),
+    getStats: async () => {
+        try {
+            const response = await axiosInstance.get('/api/admin/stats');
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching admin stats:", error);
+            throw error;
+        }
+    },
 
-    getProfileByUserId: (userId) =>
-        axiosInstance.get(`/api/admin/profile/user/${userId}`).then((r) => r.data),
+    getProfileByUserId: async (userId) => {
+        try {
+            const response = await axiosInstance.get(`/api/admin/profile/user/${userId}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching admin profile for user ID ${userId}:`, error);
+            throw error;
+        }
+    },
 
-    updateProfile: (userId, data) =>
-        axiosInstance.put(`/api/admin/profile/user/${userId}`, data).then((r) => r.data),
+    updateProfile: async (userId, data) => {
+        try {
+            const response = await axiosInstance.put(`/api/admin/profile/user/${userId}`, data);
+            return response.data;
+        } catch (error) {
+            console.error(`Error updating admin profile for user ID ${userId}:`, error);
+            throw error;
+        }
+    },
 };
 
 export default adminService;
