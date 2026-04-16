@@ -36,7 +36,7 @@ const AppointmentStatus = () => {
   const fetchAppointments = async () => {
     setLoading(true);
     try {
-        const res = await axiosInstance.get('/api/appointments/my');
+        const res = await axiosInstance.get('/appointments/my');
         if (res.data && res.data.length > 0) {
           setAllAppointments(res.data);
           setIsDemo(false);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api/v1',
+    baseURL: 'https://hospitalmangement-14.onrender.com/api/v1',
 });
 
 // Request interceptor for adding the bearer token

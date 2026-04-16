@@ -3,7 +3,7 @@ import axiosInstance from '../api/axiosInstance';
 const adminService = {
     getStats: async () => {
         try {
-            const response = await axiosInstance.get('/api/admin/stats');
+            const response = await axiosInstance.get('/admin/stats');
             return response.data;
         } catch (error) {
             console.error("Error fetching admin stats:", error);
@@ -13,7 +13,7 @@ const adminService = {
 
     getProfileByUserId: async (userId) => {
         try {
-            const response = await axiosInstance.get(`/api/admin/profile/user/${userId}`);
+            const response = await axiosInstance.get(`/admin/profile/user/${userId}`);
             return response.data;
         } catch (error) {
             console.error(`Error fetching admin profile for user ID ${userId}:`, error);
@@ -23,7 +23,7 @@ const adminService = {
 
     updateProfile: async (userId, data) => {
         try {
-            const response = await axiosInstance.put(`/api/admin/profile/user/${userId}`, data);
+            const response = await axiosInstance.put(`/admin/profile/user/${userId}`, data);
             return response.data;
         } catch (error) {
             console.error(`Error updating admin profile for user ID ${userId}:`, error);
