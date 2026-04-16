@@ -18,7 +18,7 @@ public class LabResult {
 
     @ManyToOne
     @JoinColumn(name = "test_id")
-    private LabTest test;
+    private LabTest labTest;
 
     @ManyToOne
     @JoinColumn(name = "patient_id")
@@ -26,10 +26,11 @@ public class LabResult {
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")
-    private Doctor prescribedBy;
+    private Doctor doctor;
 
     private String resultValue;
     private String normalRange;
     private String status;
-    private LocalDateTime resultDate;
+    private LocalDateTime orderDate;
+    private LocalDateTime completionDate;
 }

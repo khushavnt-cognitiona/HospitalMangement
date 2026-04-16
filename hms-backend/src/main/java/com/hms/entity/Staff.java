@@ -18,4 +18,8 @@ public class Staff {
     private String name;
     private String role; // Can be Nurse, Tech, Janitor, etc.
     private String shift; // Day, Night
+    private String department;
+    private String designation;
+    private String qualification;
+    private String contact;
 }

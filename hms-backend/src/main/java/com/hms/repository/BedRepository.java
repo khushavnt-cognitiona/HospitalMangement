@@ -7,6 +7,7 @@ import java.util.List;
 
 @Repository
 public interface BedRepository extends JpaRepository<Bed, Long> {
+    List<Bed> findByWard(com.hms.entity.Ward ward);
     List<Bed> findByWardId(Long wardId);
     List<Bed> findByOccupied(boolean occupied);
 }

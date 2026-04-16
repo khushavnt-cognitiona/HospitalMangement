@@ -20,7 +20,9 @@ public class Prescription {
     private Appointment appointment;
 
     @Column(columnDefinition = "TEXT")
-    private String medicines;
+    private String medicine;
+
+    private java.time.LocalDateTime date;
 
     @Column(columnDefinition = "TEXT")
     private String diagnosis;

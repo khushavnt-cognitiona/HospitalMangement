@@ -8,7 +8,6 @@ import com.hms.service.PrescriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -27,7 +26,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 .medicine(medicines)
                 // Assuming diagnosis/notes go into specific fields in entity, if they exist
                 // If not, we might need to update the entity.
-                .date(new Date())
+                .date(java.time.LocalDateTime.now())
                 .build();
         
         return prescriptionRepository.save(prescription);
