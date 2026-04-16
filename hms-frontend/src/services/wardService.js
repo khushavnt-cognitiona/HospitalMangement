@@ -3,7 +3,7 @@ import axiosInstance from "../api/axiosInstance";
 const wardService = {
   createWard: async (data) => {
     try {
-      const response = await axiosInstance.post("/wards", data);
+      const response = await axiosInstance.post("wards", data);
       return response.data;
     } catch (error) {
       console.error("Error creating ward:", error);
@@ -12,7 +12,7 @@ const wardService = {
   },
   getAllWards: async () => {
     try {
-      const response = await axiosInstance.get("/wards");
+      const response = await axiosInstance.get("wards");
       return response.data;
     } catch (error) {
       console.error("Error fetching wards:", error);
@@ -21,7 +21,7 @@ const wardService = {
   },
   getWardById: async (id) => {
     try {
-      const response = await axiosInstance.get(`/wards/${id}`);
+      const response = await axiosInstance.get(`wards/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching ward with ID ${id}:`, error);
@@ -30,7 +30,7 @@ const wardService = {
   },
   assignBed: async (data) => {
     try {
-      const response = await axiosInstance.post("/beds/assign", data);
+      const response = await axiosInstance.post("beds/assign", data);
       return response.data;
     } catch (error) {
       console.error("Error assigning bed:", error);
@@ -39,7 +39,7 @@ const wardService = {
   },
   releaseBed: async (bedId) => {
     try {
-      const response = await axiosInstance.post(`/beds/release/${bedId}`);
+      const response = await axiosInstance.post(`beds/release/${bedId}`);
       return response.data;
     } catch (error) {
       console.error(`Error releasing bed with ID ${bedId}:`, error);
@@ -48,7 +48,7 @@ const wardService = {
   },
   getWardBeds: async (wardId) => {
     try {
-      const response = await axiosInstance.get(`/beds/status/ward/${wardId}`);
+      const response = await axiosInstance.get(`beds/status/ward/${wardId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching beds for ward ID ${wardId}:`, error);

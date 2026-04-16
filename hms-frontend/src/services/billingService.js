@@ -4,7 +4,7 @@ const createBill = async (billData) => {
   try {
     const { patientId, amount, description } = billData;
     const response = await axiosInstance.post(
-      `/billing/create?patientId=${patientId}&amount=${amount}&description=${description}`
+      `billing/create?patientId=${patientId}&amount=${amount}&description=${description}`
     );
     return response.data;
   } catch (error) {
@@ -15,7 +15,7 @@ const createBill = async (billData) => {
 
 const processPayment = async (id, razorpayOrderId) => {
   try {
-    const response = await axiosInstance.post(`/billing/process/${id}?razorpayOrderId=${razorpayOrderId}`);
+    const response = await axiosInstance.post(`billing/process/${id}?razorpayOrderId=${razorpayOrderId}`);
     return response.data;
   } catch (error) {
     console.error(`Error processing payment for bill ID ${id}:`, error);
@@ -25,7 +25,7 @@ const processPayment = async (id, razorpayOrderId) => {
 
 const getPatientBills = async (patientId) => {
   try {
-    const response = await axiosInstance.get(`/billing/patient/${patientId}`);
+    const response = await axiosInstance.get(`billing/patient/${patientId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching bills for patient ID ${patientId}:`, error);
@@ -35,7 +35,7 @@ const getPatientBills = async (patientId) => {
 
 const getAllBills = async () => {
   try {
-    const response = await axiosInstance.get("/billing");
+    const response = await axiosInstance.get("billing");
     return response.data;
   } catch (error) {
     console.error("Error fetching all bills:", error);

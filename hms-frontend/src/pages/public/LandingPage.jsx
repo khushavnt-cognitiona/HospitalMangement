@@ -29,7 +29,7 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axiosInstance.get('/doctors');
+        const response = await axiosInstance.get('doctors');
         setDoctors(response.data.slice(0, 4));
       } catch (error) {
         console.error("Failed to fetch doctors:", error);

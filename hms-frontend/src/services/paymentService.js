@@ -3,7 +3,7 @@ import axiosInstance from "../api/axiosInstance";
 const paymentService = {
   createPayment: async (data) => {
     try {
-      const response = await axiosInstance.post("/payments/create", data);
+      const response = await axiosInstance.post("payments/create", data);
       return response.data;
     } catch (error) {
       console.error("Error creating payment:", error);
@@ -12,7 +12,7 @@ const paymentService = {
   },
   verifyPayment: async (data) => {
     try {
-      const response = await axiosInstance.post("/payments/verify", data);
+      const response = await axiosInstance.post("payments/verify", data);
       return response.data;
     } catch (error) {
       console.error("Error verifying payment:", error);
@@ -21,7 +21,7 @@ const paymentService = {
   },
   getPaymentById: async (id) => {
     try {
-      const response = await axiosInstance.get(`/payments/${id}`);
+      const response = await axiosInstance.get(`payments/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching payment with ID ${id}:`, error);
@@ -30,7 +30,7 @@ const paymentService = {
   },
   getPatientPayments: async (patientId) => {
     try {
-      const response = await axiosInstance.get(`/payments/patient/${patientId}`);
+      const response = await axiosInstance.get(`payments/patient/${patientId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching payments for patient ID ${patientId}:`, error);
@@ -39,7 +39,7 @@ const paymentService = {
   },
   getInvoice: async (paymentId) => {
     try {
-      const response = await axiosInstance.get(`/payments/invoice/${paymentId}`);
+      const response = await axiosInstance.get(`payments/invoice/${paymentId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching invoice for payment ID ${paymentId}:`, error);

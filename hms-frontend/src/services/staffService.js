@@ -12,7 +12,7 @@ const staffService = {
   },
   getAllStaff: async () => {
     try {
-      const response = await axiosInstance.get("/staff");
+      const response = await axiosInstance.get("staff");
       return response.data;
     } catch (error) {
       console.error("Error fetching all staff:", error);
@@ -21,7 +21,7 @@ const staffService = {
   },
   getStaffById: async (id) => {
     try {
-      const response = await axiosInstance.get(`/staff/${id}`);
+      const response = await axiosInstance.get(`staff/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching staff with ID ${id}:`, error);
@@ -39,7 +39,7 @@ const staffService = {
   },
   getStaffByUserId: async (userId) => {
     try {
-      const response = await axiosInstance.get(`/staff/user/${userId}`);
+      const response = await axiosInstance.get(`staff/user/${userId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching staff for user ID ${userId}:`, error);

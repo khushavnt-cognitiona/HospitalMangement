@@ -3,7 +3,7 @@ import axiosInstance from "../api/axiosInstance";
 const recordService = {
   createRecord: async (data) => {
     try {
-      const response = await axiosInstance.post("/records", data);
+      const response = await axiosInstance.post("records", data);
       return response.data;
     } catch (error) {
       console.error("Error creating record:", error);
@@ -12,7 +12,7 @@ const recordService = {
   },
   getPatientRecords: async (patientId) => {
     try {
-      const response = await axiosInstance.get(`/records/patient/${patientId}`);
+      const response = await axiosInstance.get(`records/patient/${patientId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching records for patient ID ${patientId}:`, error);
@@ -21,7 +21,7 @@ const recordService = {
   },
   getRecordById: async (id) => {
     try {
-      const response = await axiosInstance.get(`/records/${id}`);
+      const response = await axiosInstance.get(`records/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching record with ID ${id}:`, error);

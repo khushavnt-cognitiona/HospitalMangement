@@ -3,7 +3,7 @@ import axiosInstance from "../api/axiosInstance";
 const subscriptionService = {
   getPlans: async () => {
     try {
-      const response = await axiosInstance.get("/plans");
+      const response = await axiosInstance.get("plans");
       return response.data;
     } catch (error) {
       console.error("Error fetching subscription plans:", error);
@@ -13,7 +13,7 @@ const subscriptionService = {
 
   getActiveSubscription: async (userId) => {
     try {
-      const response = await axiosInstance.get(`/subscriptions/active/user/${userId}`);
+      const response = await axiosInstance.get(`subscriptions/active/user/${userId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching active subscription for user ID ${userId}:`, error);
@@ -23,7 +23,7 @@ const subscriptionService = {
 
   subscribe: async (planId, userId) => {
     try {
-      const response = await axiosInstance.post("/subscriptions", {
+      const response = await axiosInstance.post("subscriptions", {
         userId,
         planId
       });
@@ -36,7 +36,7 @@ const subscriptionService = {
 
   getSubscriptionHistory: async (userId) => {
     try {
-      const response = await axiosInstance.get(`/subscriptions/user/${userId}`);
+      const response = await axiosInstance.get(`subscriptions/user/${userId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching subscription history for user ID ${userId}:`, error);
@@ -46,7 +46,7 @@ const subscriptionService = {
 
   cancelSubscription: async (subscriptionId) => {
     try {
-      const response = await axiosInstance.put(`/subscriptions/${subscriptionId}/cancel`);
+      const response = await axiosInstance.put(`subscriptions/${subscriptionId}/cancel`);
       return response.data;
     } catch (error) {
       console.error(`Error cancelling subscription with ID ${subscriptionId}:`, error);

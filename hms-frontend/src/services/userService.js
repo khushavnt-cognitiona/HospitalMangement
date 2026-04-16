@@ -2,7 +2,7 @@ import axiosInstance from "../api/axiosInstance";
 
 const getUserProfile = async () => {
   try {
-    const response = await axiosInstance.get("/users/profile");
+    const response = await axiosInstance.get("users/profile");
     return response.data;
   } catch (error) {
     console.error("Error fetching user profile:", error);
@@ -12,7 +12,7 @@ const getUserProfile = async () => {
 
 const updateProfile = async (userData) => {
   try {
-    const response = await axiosInstance.put("/users/profile", userData);
+    const response = await axiosInstance.put("users/profile", userData);
     // Update local storage user data if successful
     const currentUser = JSON.parse(localStorage.getItem("user"));
     const updatedUser = { ...currentUser, ...response.data };
@@ -26,7 +26,7 @@ const updateProfile = async (userData) => {
 
 const uploadProfileImage = async (formData) => {
   try {
-    const response = await axiosInstance.post("/users/profile/image", formData, {
+    const response = await axiosInstance.post("users/profile/image", formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
