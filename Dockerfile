@@ -10,7 +10,8 @@ COPY hms-backend/src hms-backend/src
 WORKDIR /app/hms-backend
 
 # Build the application and create the JAR file
-RUN mvn clean package -DskipTests
+# Added Maven memory flags to prevent Render from killing the process (Free Tier limit)
+RUN mvn clean package -DskipTests -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
 # Stage 2: Run the application using a lightweight JRE
 FROM eclipse-temurin:21-jre-jammy
