@@ -24,7 +24,11 @@ const EditProfile = () => {
     profileImage: "",
     dateOfBirth: "",
     emergencyContact: "",
-    knownAllergies: ""
+    knownAllergies: "",
+    // Clinical data for patients
+    age: "",
+    gender: "",
+    medicalHistory: ""
   });
   const [imagePreview, setImagePreview] = useState("");
 
@@ -41,7 +45,10 @@ const EditProfile = () => {
           profileImage: data.profileImage || "",
           dateOfBirth: data.dateOfBirth || "",
           emergencyContact: data.emergencyContact || "",
-          knownAllergies: data.knownAllergies || ""
+          knownAllergies: data.knownAllergies || "",
+          age: data.age || "",
+          gender: data.gender || "",
+          medicalHistory: data.medicalHistory || ""
         });
         setImagePreview(data.profileImage || "");
       } catch (error) {
@@ -75,9 +82,9 @@ const EditProfile = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      await userService.updateProfile(formData);
-      updateUserData(formData);
-      setMessage({ type: "success", text: "Profile security synchronization successful!" });
+      const updatedProfile = await userService.updateProfile(formData);
+      updateUserData(updatedProfile);
+      setMessage({ type: "success", text: "Security profiling and clinical records updated successfully!" });
       setTimeout(() => navigate("/profile"), 1500);
     } catch (error) {
       setMessage({ type: "danger", text: error.response?.data?.message || "Profile update failed." });
@@ -257,7 +264,7 @@ const EditProfile = () => {
                       <Form.Control 
                         as="textarea" 
                         name="address"
-                        rows={3}
+                        rows={2}
                         value={formData.address}
                         onChange={handleChange}
                         className="bg-slate-50 border-0 py-3 px-4 rounded-4 shadow-none focus-ring"
@@ -266,6 +273,64 @@ const EditProfile = () => {
                     </Form.Group>
                   </Col>
                 </Row>
+
+                {/* Patient Specific Clinical Fields */}
+                {authUser?.role === 'PATIENT' && (
+                  <>
+                    <div className="form-section-label mb-4 mt-5">Clinical Identity (Patient Only)</div>
+                    <Row className="g-4">
+                      <Col md={4}>
+                        <Form.Group>
+                          <Form.Label className="fw-black text-slate-500 small text-uppercase ls-1 ms-1">
+                            Current Age
+                          </Form.Label>
+                          <Form.Control 
+                            type="number" 
+                            name="age"
+                            value={formData.age}
+                            onChange={handleChange}
+                            className="bg-slate-50 border-0 py-3 px-4 rounded-4 shadow-none focus-ring"
+                            placeholder="Years"
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={8}>
+                        <Form.Group>
+                          <Form.Label className="fw-black text-slate-500 small text-uppercase ls-1 ms-1">
+                            Gender
+                          </Form.Label>
+                          <Form.Select 
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            className="bg-slate-50 border-0 py-3 px-4 rounded-4 shadow-none focus-ring"
+                          >
+                            <option value="">Identify Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other/Prefer not to say</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                      <Col md={12}>
+                        <Form.Group>
+                          <Form.Label className="fw-black text-slate-500 small text-uppercase ls-1 ms-1">
+                            Medical History Summary
+                          </Form.Label>
+                          <Form.Control 
+                            as="textarea" 
+                            name="medicalHistory"
+                            rows={3}
+                            value={formData.medicalHistory}
+                            onChange={handleChange}
+                            className="bg-slate-50 border-0 py-3 px-4 rounded-4 shadow-none focus-ring"
+                            placeholder="Brief summary of past conditions, surgeries, or chronic illnesses"
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </>
+                )}
 
                 <div className="d-grid mt-5">
                   <Button 

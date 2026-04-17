@@ -38,7 +38,7 @@ const Layout = ({ children }) => {
   return (
     <div className="min-vh-100 d-flex flex-column" style={{ backgroundColor: "#f8fafc" }}>
       <Navbar />
-      <main className="flex-grow-1" style={{ paddingTop: "20px" }}>
+      <main className="flex-grow-1" style={{ paddingTop: "80px" }}>
         {children}
       </main>
     </div>
@@ -52,7 +52,7 @@ const App = () => {
         <Router>
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<Layout><LandingPage /></Layout>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 

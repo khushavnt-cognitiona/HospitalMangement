@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navbar, Nav, Container, Button, Dropdown, Image } from 'react-bootstrap';
+import { Navbar, Nav, Container, Button, Dropdown, Image, Badge } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FaHospital, FaHome, FaUserMd, FaSignInAlt, FaCalendarPlus, FaSignOutAlt, 
@@ -20,12 +20,12 @@ const navLinks = [
 ];
 
 const AppNavbar = () => {
-    const { auth, logout, isAuthenticated } = useAuth();
+    const { user, auth, logout, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
 
-    const role = auth.role?.toUpperCase();
+    const role = auth?.role?.toUpperCase() || '';
     const currentRole = roleConfig[role] || { color: '#6c757d', label: role, dashPath: '/', icon: FaUser };
 
     useEffect(() => {
@@ -38,24 +38,27 @@ const AppNavbar = () => {
 
     return (
         <Navbar
-            bg="white"
             expand="lg"
-            variant="light"
-            className={`py-3 ${scrolled ? 'shadow-sm' : ''}`}
+            variant="dark"
+            className={`py-3 ${scrolled ? 'shadow-lg' : ''}`}
             style={{
+                background: scrolled 
+                    ? 'rgba(15, 23, 42, 0.98)' 
+                    : 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+                backdropFilter: 'blur(10px)',
                 position: 'sticky',
                 top: 0,
                 zIndex: 1030,
-                transition: 'all 0.3s ease',
-                borderBottom: '1px solid #eee'
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.08)' : 'none'
             }}
         >
             <Container>
                 <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-                    <FaHospital className="text-primary fs-2 me-2" />
+                    <FaHospital className="text-white fs-2 me-2" style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }} />
                     <div>
-                        <div className="fw-bold fs-4 text-dark mb-0 lh-1">Hospital</div>
-                        <div className="text-primary fw-bold small text-uppercase ls-1" style={{ fontSize: '0.65rem', letterSpacing: 2 }}>Manager</div>
+                        <div className="fw-bold fs-4 text-white mb-0 lh-1">Hospital</div>
+                        <div className="text-info fw-bold small text-uppercase ls-1" style={{ fontSize: '0.65rem', letterSpacing: 2 }}>Manager</div>
                     </div>
                 </Navbar.Brand>
 
@@ -67,7 +70,7 @@ const AppNavbar = () => {
                                 key={to}
                                 as={Link}
                                 to={to}
-                                className={`mx-2 d-flex align-items-center fw-bold small text-uppercase ${location.pathname === to ? 'text-primary' : 'text-muted'}`}
+                                className={`mx-2 d-flex align-items-center fw-bold small text-uppercase nav-link-custom ${location.pathname === to ? 'active' : ''}`}
                             >
                                 {label}
                             </Nav.Link>
@@ -152,33 +155,57 @@ const AppNavbar = () => {
                             </div>
                         )}
                     </Nav>
-                </Navbar.Collapse>
+            </Navbar.Collapse>
             </Container>
             <style>{`
+                .nav-link-custom {
+                    color: rgba(255, 255, 255, 0.7);
+                    transition: all 0.3s ease;
+                    position: relative;
+                }
+                .nav-link-custom:hover, .nav-link-custom.active {
+                    color: #fff !important;
+                }
+                .nav-link-custom::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -5px;
+                    left: 50%;
+                    width: 0;
+                    height: 2px;
+                    background: #0ea5e9;
+                    transition: all 0.3s ease;
+                    transform: translateX(-50%);
+                }
+                .nav-link-custom:hover::after, .nav-link-custom.active::after {
+                    width: 20px;
+                }
+
                 .btn-portal-login {
-                    background: #0f172a;
+                    background: #0ea5e9;
                     color: white;
                     border: none;
                     border-radius: 100px;
                     transition: all 0.3s ease;
                 }
                 .btn-portal-login:hover {
-                    background: #1e293b;
+                    background: #0284c7;
                     transform: translateY(-2px);
-                    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
+                    box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
                 }
 
                 .user-toggle-pill {
                     padding: 6px 16px 6px 6px;
-                    background: #f8fafc;
-                    border: 1px solid #f1f5f9;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 100px;
                     transition: all 0.3s ease;
+                    color: white !important;
                 }
                 .user-toggle-pill:hover {
-                    background: white;
+                    background: rgba(255, 255, 255, 0.1);
                     border-color: #0ea5e9;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
                 }
 
                 .nav-avatar-container {
@@ -188,7 +215,7 @@ const AppNavbar = () => {
                     width: 42px;
                     height: 42px;
                     object-fit: cover;
-                    border: 2px solid white;
+                    border: 2px solid rgba(255, 255, 255, 0.2);
                 }
                 .nav-status-pulse {
                     position: absolute;
@@ -197,23 +224,28 @@ const AppNavbar = () => {
                     width: 10px;
                     height: 10px;
                     background: #22c55e;
-                    border: 2px solid white;
+                    border: 2px solid #0f172a;
                     border-radius: 50%;
                 }
 
+                .text-slate-900 { color: #fff !important; }
+                .text-slate-500 { color: rgba(255, 255, 255, 0.6) !important; }
+
                 .nav-glass-dropdown {
-                    background: rgba(255, 255, 255, 0.95) !important;
+                    background: rgba(15, 23, 42, 0.95) !important;
                     backdrop-filter: blur(20px);
-                    border: 1px solid rgba(255,255,255,1) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
                 }
 
                 .nav-dropdown-item {
                     transition: all 0.2s ease;
                     border: 1px solid transparent;
+                    color: rgba(255, 255, 255, 0.8) !important;
                 }
                 .nav-dropdown-item:hover {
-                    background: #f8fafc !important;
-                    border-color: #f1f5f9;
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    border-color: rgba(255, 255, 255, 0.1);
+                    color: #fff !important;
                     transform: translateX(4px);
                 }
 
@@ -226,16 +258,14 @@ const AppNavbar = () => {
                     justify-content: center;
                     font-size: 0.9rem;
                 }
-                .nav-icon-box.primary { background: #e0f2fe; color: #0ea5e9; }
-                .nav-icon-box.secure { background: #f0fdf4; color: #22c55e; }
-                .nav-icon-box.danger { background: #fef2f2; color: #ef4444; }
+                .nav-icon-box.primary { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
+                .nav-icon-box.secure { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+                .nav-icon-box.danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
                 .fw-black { font-weight: 900; }
                 .ls-2 { letter-spacing: 2px; }
-                .text-slate-400 { color: #94a3b8; }
-                .text-slate-500 { color: #64748b; }
-                .text-slate-900 { color: #0f172a; }
-                .bg-slate-50 { background: #f8fafc; }
+                .text-slate-400 { color: rgba(255, 255, 255, 0.4); }
+                .bg-slate-50 { background: rgba(255, 255, 255, 0.03); }
                 .cursor-pointer { cursor: pointer; }
                 .ls-tight { letter-spacing: -0.02em; }
                 .dropdown-toggle::after { display: none !important; }

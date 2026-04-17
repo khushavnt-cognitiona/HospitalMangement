@@ -13,10 +13,6 @@ const getUserProfile = async () => {
 const updateProfile = async (userData) => {
   try {
     const response = await axiosInstance.put("users/profile", userData);
-    // Update local storage user data if successful
-    const currentUser = JSON.parse(localStorage.getItem("user"));
-    const updatedUser = { ...currentUser, ...response.data };
-    localStorage.setItem("user", JSON.stringify(updatedUser));
     return response.data;
   } catch (error) {
     console.error("Error updating user profile:", error);

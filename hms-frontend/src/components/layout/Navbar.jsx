@@ -34,41 +34,15 @@ const AppNavbar = () => {
     return name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
   };
 
-  // Modern Role-Based Navigation Architecture
-  const NAV_CONFIG = {
-    ADMIN: [
-      { path: "/admin/dashboard", label: "Dashboard", icon: <FaHome /> },
-      { path: "/doctors", label: "Doctors", icon: <FaUserMd /> },
-      { path: "/admin/patients", label: "Patients", icon: <FaUsers /> },
-      { path: "/billing", label: "Billing", icon: <FaFileInvoiceDollar /> },
-      { path: "/admin/reports", label: "Reports", icon: <FaChartBar /> },
-    ],
-    DOCTOR: [
-      { path: "/doctor/dashboard", label: "Dashboard", icon: <FaHome /> },
-      { path: "/doctor/appointments", label: "Appointments", icon: <FaCalendarCheck /> },
-      { path: "/doctor/patients", label: "Patients", icon: <FaUsers /> },
-      { path: "/doctor/prescriptions", label: "Prescriptions", icon: <FaStethoscope /> },
-    ],
-    PATIENT: [
-      { path: "/patient/dashboard", label: "Dashboard", icon: <FaHome /> },
-      { path: "/patient/book", label: "Book Appointment", icon: <FaCalendarPlus /> },
-      { path: "/patient/appointments", label: "My History", icon: <FaCalendarCheck /> },
-      { path: "/patient/billing", label: "My Billings", icon: <FaFileInvoiceDollar /> },
-      { path: "/patient/plans", label: "Health Plans", icon: <FaShieldAlt /> },
-    ],
-    NURSE: [
-      { path: "/nurse", label: "Dashboard", icon: <FaHome /> },
-      { path: "/wards", label: "Ward", icon: <FaBed /> },
-      { path: "/nurse/care", label: "Patient Care", icon: <FaHandHoldingHeart /> },
-    ],
-  };
-
-  const menuItems = user ? NAV_CONFIG[user.role] || [] : [];
+  // Simplified Navigation: Only Home
+  const menuItems = [
+    { path: "/", label: "Home", icon: <FaHome /> }
+  ];
 
   return (
     <Navbar 
       expand="lg" 
-      sticky="top" 
+      fixed="top" 
       className={`navbar-premium ${isScrolled ? 'navbar-scrolled' : ''}`}
     >
       <Container>
@@ -105,59 +79,72 @@ const AppNavbar = () => {
 
           {/* Right Action Section */}
           <Nav className="align-items-center gap-3 right-nav-group">
-            {/* Notification Bell */}
-            <div className="nav-action-btn">
-              <FaBell size={20} />
-              <div className="notification-badge-premium">3</div>
-            </div>
-
-            {/* Profile Dropdown */}
-            {user && (
-              <NavDropdown
-                id="user-profile-dropdown"
-                align="end"
-                title={
-                  <div className="user-profile-pill">
-                    <div className="nav-avatar-circle">
-                      {getInitials(user.name)}
-                    </div>
-                    <div className="d-none d-lg-block text-start user-info-text">
-                      <div className="user-name-small">{user.name}</div>
-                      <div className="user-role-badge">{user.role}</div>
-                    </div>
-                  </div>
-                }
-                className="profile-dropdown-custom"
-              >
-                {/* Mobile Identity Info */}
-                <div className="px-3 py-3 border-bottom mb-2 d-lg-none">
-                  <div className="fw-bold text-dark">{user.name}</div>
-                  <small className="text-primary fw-bold text-uppercase" style={{ fontSize: '0.6rem' }}>{user.role}</small>
+            {!user ? (
+              <>
+                <Link to="/login" className="text-secondary fw-bold text-decoration-none hover-text-primary px-3 d-none d-lg-block">
+                  Sign In
+                </Link>
+                <Link to="/register" className="btn btn-primary fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2" style={{ background: '#0076ff', border: 'none' }}>
+                  Get Started
+                </Link>
+              </>
+            ) : (
+              <>
+                {/* Notification Bell */}
+                <div className="nav-action-btn">
+                  <FaBell size={20} />
+                  <div className="notification-badge-premium">3</div>
                 </div>
-                
-                <NavDropdown.Item as={Link} to="/profile" className="dropdown-item-premium">
-                  <div className="nav-icon-wrapper bg-light-blue">
-                    <FaUser size={14} />
-                  </div>
-                  <span>View Profile</span>
-                </NavDropdown.Item>
 
-                <NavDropdown.Item as={Link} to="/profile/edit" className="dropdown-item-premium">
-                   <div className="nav-icon-wrapper bg-light-green">
-                    <FaEdit size={14} />
-                  </div>
-                  <span>Security Settings</span>
-                </NavDropdown.Item>
-                
-                <NavDropdown.Divider className="my-2 opacity-50" />
-                
-                <NavDropdown.Item onClick={handleLogout} className="dropdown-item-premium logout-item">
-                  <div className="nav-icon-wrapper bg-light-red">
-                    <FaSignOutAlt size={14} />
-                  </div>
-                  <span className="fw-bold">Sign Out</span>
-                </NavDropdown.Item>
-              </NavDropdown>
+                {/* Profile Dropdown */}
+                <div className="profile-section-wrapper">
+                  <NavDropdown
+                    id="user-profile-dropdown"
+                    align="end"
+                    title={
+                      <div className="user-profile-pill">
+                        <div className="nav-avatar-circle">
+                          {getInitials(user.name)}
+                        </div>
+                        <div className="d-none d-lg-block text-start user-info-text">
+                          <div className="user-name-small">{user.name}</div>
+                          <div className="user-role-badge">{user.role}</div>
+                        </div>
+                      </div>
+                    }
+                    className="nav-glass-dropdown"
+                  >
+                    {/* Mobile Identity Info */}
+                    <div className="px-3 py-3 border-bottom mb-2 d-lg-none">
+                      <div className="fw-bold text-dark">{user.name}</div>
+                      <small className="text-primary fw-bold text-uppercase" style={{ fontSize: '0.6rem' }}>{user.role}</small>
+                    </div>
+                    
+                    <NavDropdown.Item as={Link} to="/profile" className="dropdown-item-premium">
+                      <div className="nav-icon-wrapper bg-light-blue">
+                        <FaUser size={14} />
+                      </div>
+                      <span>View Profile</span>
+                    </NavDropdown.Item>
+  
+                    <NavDropdown.Item as={Link} to="/profile/edit" className="dropdown-item-premium">
+                       <div className="nav-icon-wrapper bg-light-green">
+                        <FaEdit size={14} />
+                      </div>
+                      <span>Security Settings</span>
+                    </NavDropdown.Item>
+                    
+                    <NavDropdown.Divider className="my-2 opacity-50" />
+                    
+                    <NavDropdown.Item onClick={handleLogout} className="dropdown-item-premium logout-item">
+                      <div className="nav-icon-wrapper bg-light-red">
+                        <FaSignOutAlt size={14} />
+                      </div>
+                      <span className="fw-bold">Sign Out</span>
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </div>
+              </>
             )}
           </Nav>
         </Navbar.Collapse>

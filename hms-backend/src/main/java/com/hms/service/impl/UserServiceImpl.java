@@ -63,15 +63,15 @@ public class UserServiceImpl implements UserService {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username).orElseThrow();
         
-        // Update User info
-        user.setName(dto.getName());
-        if (dto.getPhone() != null && !dto.getPhone().trim().isEmpty()) user.setPhone(dto.getPhone());
-        if (dto.getAddress() != null && !dto.getAddress().trim().isEmpty()) user.setAddress(dto.getAddress());
-        if (dto.getBloodGroup() != null && !dto.getBloodGroup().trim().isEmpty()) user.setBloodGroup(dto.getBloodGroup());
-        if (dto.getProfileImage() != null && !dto.getProfileImage().trim().isEmpty()) user.setProfileImage(dto.getProfileImage());
-        if (dto.getDateOfBirth() != null && !dto.getDateOfBirth().trim().isEmpty()) user.setDateOfBirth(dto.getDateOfBirth());
-        if (dto.getEmergencyContact() != null && !dto.getEmergencyContact().trim().isEmpty()) user.setEmergencyContact(dto.getEmergencyContact());
-        if (dto.getKnownAllergies() != null && !dto.getKnownAllergies().trim().isEmpty()) user.setKnownAllergies(dto.getKnownAllergies());
+        // Update User info - ONLY update if value is provided from frontend
+        if (dto.getName() != null) user.setName(dto.getName());
+        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+        if (dto.getAddress() != null) user.setAddress(dto.getAddress());
+        if (dto.getBloodGroup() != null) user.setBloodGroup(dto.getBloodGroup());
+        if (dto.getProfileImage() != null) user.setProfileImage(dto.getProfileImage());
+        if (dto.getDateOfBirth() != null) user.setDateOfBirth(dto.getDateOfBirth());
+        if (dto.getEmergencyContact() != null) user.setEmergencyContact(dto.getEmergencyContact());
+        if (dto.getKnownAllergies() != null) user.setKnownAllergies(dto.getKnownAllergies());
         
         userRepository.save(user);
 
@@ -82,9 +82,11 @@ public class UserServiceImpl implements UserService {
                 p.setUser(user);
                 return p;
             });
+            
             if (dto.getAge() != null) patient.setAge(dto.getAge());
-            if (dto.getGender() != null && !dto.getGender().trim().isEmpty()) patient.setGender(dto.getGender());
-            if (dto.getMedicalHistory() != null && !dto.getMedicalHistory().trim().isEmpty()) patient.setMedicalHistory(dto.getMedicalHistory());
+            if (dto.getGender() != null) patient.setGender(dto.getGender());
+            if (dto.getMedicalHistory() != null) patient.setMedicalHistory(dto.getMedicalHistory());
+            
             patientRepository.save(patient);
         }
         

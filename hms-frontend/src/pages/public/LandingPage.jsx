@@ -46,35 +46,9 @@ const LandingPage = () => {
   ];
   return (
     <>
-      {/* Top Navbar specifically for Landing Page */}
-      <Navbar expand="lg" fixed="top" className="shadow-sm py-2 transition-all" style={{ backdropFilter: "blur(10px)", backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
-        <Container className="max-w-7xl">
-          <Navbar.Brand as={Link} to="/" className="fw-black fs-4 text-primary d-flex align-items-center gap-2 tracking-tight">
-            <div className="p-2 rounded-lg d-flex align-items-center justify-content-center shadow-sm" style={{ borderRadius: '12px', backgroundColor: '#fd7e14' }}>
-              <FaHospitalAlt className="text-white" size={24} />
-            </div>
-            HMS<span className="text-dark">Portal</span>
-          </Navbar.Brand>
-          
-          <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0 shadow-none px-0" />
-          
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mx-auto gap-2 gap-lg-4 fw-bold text-uppercase align-items-center" style={{ fontSize: "0.85rem", letterSpacing: "1px" }}>
-              <Nav.Link as={Link} to="/" className="text-primary px-2 transition-all d-flex align-items-center gap-2">
-                <FaHome size={18} className="mb-1" /> Home
-              </Nav.Link>
-            </Nav>
-            <div className="d-flex align-items-center gap-3 mt-3 mt-lg-0 pb-2 pb-lg-0 justify-content-center">
-              <Link to="/login" className="text-secondary fw-bold text-decoration-none hover-text-primary border-end border-2 pe-3">Sign In</Link>
-              <Link to="/register" className="btn btn-primary fw-bold rounded-pill px-4 py-2 shadow-sm hover-lift d-flex align-items-center gap-2">
-                <FaUserPlus size={16}/> Get Started
-              </Link>
-            </div>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      {/* Main content follows the global Navbar provided by Layout */}
 
-      <main style={{ marginTop: "78px", overflowX: "hidden" }}>
+      <main className="mt-3" style={{ overflowX: "hidden" }}>
         {/* HERO CAROUSEL */}
         <Carousel fade nextLabel="" prevLabel="" indicators={true} className="shadow-lg">
           <Carousel.Item style={{ height: "85vh", position: "relative", backgroundColor:"#000" }}>
