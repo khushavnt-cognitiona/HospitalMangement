@@ -82,7 +82,13 @@ const EditProfile = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      const updatedProfile = await userService.updateProfile(formData);
+      // Sanitize payload for backend types (e.g. convert age string to number)
+      const payload = {
+        ...formData,
+        age: formData.age === "" ? null : parseInt(formData.age, 10)
+      };
+
+      const updatedProfile = await userService.updateProfile(payload);
       updateUserData(updatedProfile);
       setMessage({ type: "success", text: "Security profiling and clinical records updated successfully!" });
       setTimeout(() => navigate("/profile"), 1500);
