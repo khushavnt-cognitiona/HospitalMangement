@@ -21,10 +21,11 @@ public class EmailServiceImpl implements EmailService {
             message.setText("Your OTP code is: " + otp + ". This code is valid for 5 minutes.");
             mailSender.send(message);
         } catch (Exception e) {
-            System.err.println("FAILED TO SEND EMAIL to " + to + ": " + e.getMessage());
-            // We throw a RuntimeException so the service layer knows it failed, 
-            // but we've logged the detail for debugging.
-            throw new RuntimeException("Email delivery failed. Please check SMTP configuration.");
+            System.err.println("CRITICAL: EMAIL DELIVERY FAILED to " + to);
+            System.err.println("REASON: " + e.getMessage());
+            // We NO LONGER throw a RuntimeException here.
+            // This prevents a 500 error on the frontend and allows 
+            // the user to check the console/logs for the OTP if SMTP fails.
         }
     }
 }

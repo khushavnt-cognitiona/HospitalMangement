@@ -36,6 +36,12 @@ public class OtpServiceImpl implements OtpService {
 
         otpRepository.save(otpEntity);
         
+        // FORCE LOG OTP FOR CLOUD DEBUGGING
+        System.out.println("========================================");
+        System.out.println("OTP GENERATED FOR: " + target);
+        System.out.println("CODE: " + otp);
+        System.out.println("========================================");
+
         // Send via email (Mock phone for now)
         if (target.contains("@")) {
             emailService.sendOtpEmail(target, otp);
