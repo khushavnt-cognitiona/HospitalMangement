@@ -82,17 +82,30 @@ const EditProfile = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      const payload = {
-        ...formData,
-        age: formData.age === "" ? null : parseInt(formData.age, 10)
-      };
+      // Create a clean payload for the ProfileDTO
+      // We only send fields that have values to avoid 400 errors or overwriting with empty strings
+      const payload = {};
+      
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== "" && formData[key] !== null && formData[key] !== undefined) {
+          payload[key] = formData[key];
+        }
+      });
+
+      // Special handling for numeric age
+      if (formData.age !== "" && formData.age !== null) {
+        payload.age = parseInt(formData.age, 10);
+      } else {
+        delete payload.age;
+      }
 
       const updatedProfile = await userService.updateProfile(payload);
       updateUserData(updatedProfile);
       setMessage({ type: "success", text: "Profile updated successfully!" });
       setTimeout(() => navigate("/profile"), 1500);
     } catch (error) {
-      setMessage({ type: "danger", text: error.response?.data?.message || "Profile update failed." });
+      const errorMsg = error.response?.data?.message || error.message || "Profile update failed.";
+      setMessage({ type: "danger", text: errorMsg });
     } finally {
       setSaving(false);
     }
