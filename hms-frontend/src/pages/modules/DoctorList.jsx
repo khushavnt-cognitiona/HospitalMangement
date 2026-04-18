@@ -23,7 +23,7 @@ const DoctorList = () => {
     if (loading) return <div className="text-center mt-5"><div className="spinner-border text-primary"></div></div>;
 
     return (
-        <div className="container-fluid">
+        <div className="app-container py-4">
             <h2 className="mb-4 fw-bold">Hospital Doctors</h2>
             <div className="row g-4 text-center">
                 {doctors.map((doctor) => (

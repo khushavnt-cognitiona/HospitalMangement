@@ -48,9 +48,9 @@ const LandingPage = () => {
     <>
       {/* Main content follows the global Navbar provided by Layout */}
 
-      <main className="mt-3" style={{ overflowX: "hidden" }}>
+      <main style={{ overflowX: "hidden" }}>
         {/* HERO CAROUSEL */}
-        <Carousel fade nextLabel="" prevLabel="" indicators={true} className="shadow-lg">
+        <Carousel fade nextLabel="" prevLabel="" indicators={true} className="shadow-lg w-100">
           <Carousel.Item style={{ height: "85vh", position: "relative", backgroundColor:"#000" }}>
             <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50" style={{ zIndex: 1 }}></div>
             <img

@@ -36,9 +36,9 @@ import EditProfile from "./pages/profile/EditProfile";
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-vh-100 d-flex flex-column" style={{ backgroundColor: "#f8fafc" }}>
+    <div className="min-vh-100 d-flex flex-column bg-app">
       <Navbar />
-      <main className="flex-grow-1" style={{ paddingTop: "80px" }}>
+      <main className="flex-grow-1" style={{ marginTop: "var(--navbar-height)" }}>
         {children}
       </main>
     </div>
