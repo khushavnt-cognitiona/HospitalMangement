@@ -30,7 +30,7 @@ const login = async (credentials) => {
 
 const sendOtp = async (target) => {
   try {
-    const response = await axiosInstance.post("auth/send-otp", target);
+    const response = await axiosInstance.post("auth/send-otp", { target });
     return response.data;
   } catch (error) {
     console.error("OTP send error:", error);
