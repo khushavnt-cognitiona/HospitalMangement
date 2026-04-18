@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FaUser, FaLock, FaBriefcaseMedical, FaArrowRight } from "react-icons/fa";
+import authService from "../../services/authService";
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ username: "", password: "" });
@@ -13,7 +14,6 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const { login, loginWithOtp } = useAuth();
     const navigate = useNavigate();
-    const authService = require("../../services/authService").default;
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });

@@ -4,8 +4,9 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { 
   FaSignOutAlt, FaUser, FaEdit, FaHome, 
-  FaBriefcaseMedical, FaBell, FaSearch, FaChevronDown
+  FaBriefcaseMedical, FaBell, FaChevronDown, FaTachometerAlt, FaCheckCircle
 } from "react-icons/fa";
+import axiosInstance from "../../api/axiosInstance";
 import "../../styles/Navbar.css";
 
 const AppNavbar = () => {
@@ -13,7 +14,17 @@ const AppNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [notifications] = useState(3); // Placeholder for notifications
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Polling for notifications
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+      const interval = setInterval(fetchNotifications, 20000); // 20s polling
+      return () => clearInterval(interval);
+    }
+  }, [user]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,9 +34,40 @@ const AppNavbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await axiosInstance.get("notifications");
+      setNotifications(response.data);
+      setUnreadCount(response.data.filter(n => !n.readStatus).length);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  const markAsRead = async (id) => {
+    try {
+      await axiosInstance.patch(`notifications/${id}/read`);
+      fetchNotifications(); // Refresh list after marking
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const getDashboardPath = () => {
+    if (!user) return "/";
+    const role = user.role;
+    switch (role) {
+      case 'ADMIN': return "/admin";
+      case 'DOCTOR': return "/doctor";
+      case 'PATIENT': return "/patient/dashboard";
+      case 'NURSE': return "/nurse";
+      default: return "/";
+    }
   };
 
   const getInitials = (name) => {
@@ -36,13 +78,6 @@ const AppNavbar = () => {
   const navLinks = [
     { path: "/", label: "Home", icon: <FaHome size={18} /> },
   ];
-
-  // Role-based links
-  if (user) {
-    if (user.role === 'ADMIN') navLinks.push({ path: "/admin", label: "Dashboard" }, { path: "/doctors", label: "Doctors" });
-    if (user.role === 'DOCTOR') navLinks.push({ path: "/doctor", label: "Practice" });
-    if (user.role === 'PATIENT') navLinks.push({ path: "/patient/dashboard", label: "Health Hub" });
-  }
 
   return (
     <Navbar 
@@ -62,7 +97,7 @@ const AppNavbar = () => {
           {user && (
             <div className="nav-icon-btn position-relative">
               <FaBell size={20} />
-              {notifications > 0 && <Badge bg="danger" className="nav-badge-dot" />}
+              {unreadCount > 0 && <Badge bg="danger" className="nav-badge-dot" />}
             </div>
           )}
           <Navbar.Toggle aria-controls="main-navbar-nav" className="navbar-toggler-custom" />
@@ -80,6 +115,15 @@ const AppNavbar = () => {
                 {link.label}
               </Nav.Link>
             ))}
+            {user && (
+              <Nav.Link 
+                as={Link} 
+                to={getDashboardPath()} 
+                className={`nav-link-item dashboard-nav-link ms-lg-2 ${location.pathname.includes(getDashboardPath()) ? 'active' : ''}`}
+              >
+                <FaTachometerAlt className="me-2" /> Dashboard
+              </Nav.Link>
+            )}
           </Nav>
 
           <Nav className="align-items-center gap-2">
@@ -92,10 +136,52 @@ const AppNavbar = () => {
               </div>
             ) : (
               <div className="d-flex align-items-center gap-lg-4">
-                <div className="nav-icon-btn d-none d-lg-flex">
-                  <FaBell size={20} />
-                  {notifications > 0 && <Badge bg="danger" className="nav-badge-dot" />}
-                </div>
+                <NavDropdown
+                  id="nav-notification-dropdown"
+                  align="end"
+                  title={
+                    <div className="nav-icon-btn position-relative">
+                      <FaBell size={20} />
+                      {unreadCount > 0 && <Badge bg="danger" className="nav-badge-dot" />}
+                    </div>
+                  }
+                  className="notification-dropdown-container"
+                >
+                  <div className="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom" style={{ minWidth: '320px' }}>
+                    <h6 className="mb-0 fw-bold">Notifications</h6>
+                    {unreadCount > 0 && <span className="badge bg-primary-light text-primary rounded-pill">{unreadCount} New</span>}
+                  </div>
+                  <div className="notification-list" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-muted">
+                        <FaBell size={32} className="mb-2 opacity-20" />
+                        <p className="small mb-0">No notifications yet</p>
+                      </div>
+                    ) : (
+                      notifications.map(notif => (
+                        <NavDropdown.Item 
+                          key={notif.id} 
+                          className={`notification-item p-3 border-bottom ${!notif.readStatus ? 'bg-light' : ''}`}
+                          onClick={() => !notif.readStatus && markAsRead(notif.id)}
+                        >
+                          <div className="d-flex gap-3">
+                            <div className={`mt-1 ${notif.readStatus ? 'text-muted' : 'text-primary'}`}>
+                              <FaCheckCircle size={14} />
+                            </div>
+                            <div>
+                              <div className={`small mb-1 ${!notif.readStatus ? 'fw-bold' : ''}`}>
+                                {notif.message}
+                              </div>
+                              <div className="text-muted" style={{ fontSize: '0.7rem' }}>
+                                {new Date(notif.timestamp).toLocaleString()}
+                              </div>
+                            </div>
+                          </div>
+                        </NavDropdown.Item>
+                      ))
+                    )}
+                  </div>
+                </NavDropdown>
 
                 <NavDropdown
                   id="nav-user-dropdown"
@@ -106,11 +192,11 @@ const AppNavbar = () => {
                         {user.profileImage ? (
                           <img src={user.profileImage} alt="Avatar" className="avatar-img" />
                         ) : (
-                          getInitials(user.name)
+                          getInitials(user.name || user.username)
                         )}
                       </div>
                       <div className="d-none d-xl-block">
-                        <div className="user-name-label">{user.name}</div>
+                        <div className="user-name-label">{user.name || user.username}</div>
                         <div className="user-role-label">{user.role}</div>
                       </div>
                       <FaChevronDown size={12} className="ms-2 opacity-50" />
@@ -119,7 +205,7 @@ const AppNavbar = () => {
                   className="profile-dropdown-container"
                 >
                   <div className="dropdown-header-main d-lg-none">
-                    <div className="fw-bold">{user.name}</div>
+                    <div className="fw-bold">{user.name || user.username}</div>
                     <div className="text-muted small">{user.role}</div>
                   </div>
 

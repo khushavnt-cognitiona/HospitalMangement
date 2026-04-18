@@ -3,6 +3,8 @@ package com.hms.controller;
 import com.hms.dto.AuthenticationRequest;
 import com.hms.dto.AuthenticationResponse;
 import com.hms.dto.RegisterRequest;
+import com.hms.dto.OtpRequest;
+import com.hms.dto.OtpVerificationRequest;
 import com.hms.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +35,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/send-otp")
-    public ResponseEntity<String> sendOtp(@RequestBody String target) {
-        service.sendOtp(target);
+    public ResponseEntity<String> sendOtp(@RequestBody OtpRequest request) {
+        service.sendOtp(request);
         return ResponseEntity.ok("OTP sent successfully");
     }
 

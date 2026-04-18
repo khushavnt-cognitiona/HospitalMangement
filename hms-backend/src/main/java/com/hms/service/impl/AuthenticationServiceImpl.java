@@ -5,6 +5,7 @@ import com.hms.dto.AuthenticationRequest;
 import com.hms.dto.AuthenticationResponse;
 import com.hms.dto.RegisterRequest;
 import com.hms.dto.OtpVerificationRequest;
+import com.hms.dto.OtpRequest;
 import com.hms.entity.*;
 import com.hms.repository.*;
 import com.hms.service.AuthenticationService;
@@ -94,12 +95,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void sendOtp(String target) {
-        otpService.generateOtp(target);
+    public void sendOtp(OtpRequest request) {
+        if (request.getTarget() == null || request.getTarget().isEmpty()) {
+            throw new RuntimeException("OTP target (email/phone) is required");
+        }
+        otpService.generateOtp(request.getTarget());
     }
 
     @Override
-    public AuthenticationResponse verifyOtp(com.hms.dto.OtpVerificationRequest request) {
+    public AuthenticationResponse verifyOtp(OtpVerificationRequest request) {
         if (!otpService.verifyOtp(request.getTarget(), request.getOtp())) {
             throw new RuntimeException("Invalid or expired OTP");
         }

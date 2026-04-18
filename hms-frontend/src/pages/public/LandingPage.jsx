@@ -1,167 +1,133 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Carousel, Container, Row, Col, Card, Accordion } from "react-bootstrap";
-import { FaUserMd, FaHeartbeat, FaStethoscope, FaHospitalAlt, FaAmbulance, FaClock, FaUserPlus, FaSearchPlus, FaCalendarCheck, FaSmileBeam, FaBrain, FaTooth, FaBone, FaLungs, FaQuoteLeft, FaStar, FaAward, FaShieldAlt } from "react-icons/fa";
-import axiosInstance from "../../api/axiosInstance";
+import { Container, Row, Col, Card, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { 
+  FaUserMd, FaHeartbeat, FaCalendarCheck, FaFileMedical, FaCreditCard, 
+  FaHospital, FaBell, FaLock, FaCheckCircle, FaUsers, FaArrowRight,
+  FaShieldAlt, FaBriefcaseMedical, FaUserInjured, FaUserNurse, FaMicroscope
+} from "react-icons/fa";
+import "../../styles/LandingPage.css";
 
-const heroBg1 = "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000";
-const heroBg2 = "https://images.unsplash.com/photo-1581595220892-b0739db3ba8c?q=80&w=2000";
-const departmentBg = "https://images.unsplash.com/photo-1581594549595-35f6edc7b762?q=80&w=2000";
-const testimonial1 = "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop";
-const testimonial2 = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop";
-const testimonial3 = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop";
-const defaultDoctor = "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=300&fit=crop";
+// Path to a high-quality medical dashboard preview (using Pexels for high reliability)
+const dashboardPreview = "https://images.pexels.com/photos/7088530/pexels-photo-7088530.jpeg?auto=compress&cs=tinysrgb&w=1200";
 
 const LandingPage = () => {
-  const [doctors, setDoctors] = useState([]);
+    const [counts, setCounts] = useState({
+        patients: 0,
+        doctors: 0,
+        appointments: 0,
+        hospitals: 0
+    });
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await axiosInstance.get('doctors');
-        setDoctors(response.data.slice(0, 4));
-      } catch (error) {
-        console.error("Failed to fetch doctors:", error);
-      }
-    };
-    fetchDoctors();
-  }, []);
+    useEffect(() => {
+        // Simple counter animation logic
+        const target = { patients: 15400, doctors: 850, appointments: 42000, hospitals: 120 };
+        const interval = setInterval(() => {
+            setCounts(prev => ({
+                patients: Math.min(prev.patients + 200, target.patients),
+                doctors: Math.min(prev.doctors + 10, target.doctors),
+                appointments: Math.min(prev.appointments + 500, target.appointments),
+                hospitals: Math.min(prev.hospitals + 2, target.hospitals)
+            }));
+        }, 30);
+        return () => clearInterval(interval);
+    }, []);
 
-  return (
-    <div className="animate-fade-in">
-        <main style={{ overflowX: "hidden" }}>
-            {/* HERO CAROUSEL */}
-            <Carousel fade nextLabel="" prevLabel="" indicators={true} className="w-100 hero-carousel">
-                <Carousel.Item style={{ height: "80vh", position: "relative", backgroundColor:"#000" }}>
-                    <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50" style={{ zIndex: 1 }}></div>
-                    <img
-                        className="d-block w-100 h-100 object-fit-cover"
-                        src={heroBg1}
-                        alt="Advanced Healthcare"
-                    />
-                    <Carousel.Caption className="d-flex flex-column justify-content-center align-items-start text-start position-absolute w-100 h-100 start-0 top-0 bottom-0" style={{ zIndex: 2, padding: "0 10%" }}>
-                        <div className="animate-slide-up" style={{ maxWidth: '800px' }}>
-                            <span className="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-4 fw-bold small letter-spacing-wide">ADVANCED CLINICAL CARE</span>
-                            <h1 className="fw-bold text-white mb-4 display-3 lh-tight">
-                                Your Health, <br/><span className="text-primary-gradient bg-clip-text">Our Precision Priority.</span>
-                            </h1>
-                            <p className="fs-5 text-white-50 mb-5 max-w-lg">
-                                Experience unified world-class healthcare. Managed records, instant bookings, and transparent billing at your fingertips.
-                            </p>
-                            <div className="d-flex gap-4">
-                                <Link to="/register" className="btn btn-premium btn-premium-primary px-5 py-3 fs-5">
-                                    Start Journey
-                                </Link>
-                                <Link to="/login" className="btn btn-premium btn-premium-outline text-white border-white px-5 py-3 fs-5">
-                                    Member Login
-                                </Link>
-                            </div>
-                        </div>
-                    </Carousel.Caption>
-                </Carousel.Item>
-                
-                <Carousel.Item style={{ height: "80vh", position: "relative", backgroundColor:"#0f172a" }}>
-                    <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50" style={{ zIndex: 1 }}></div>
-                    <img
-                        className="d-block w-100 h-100 object-fit-cover"
-                        src={heroBg2}
-                        alt="Emergency Services"
-                    />
-                    <Carousel.Caption className="d-flex flex-column justify-content-center align-items-start text-start position-absolute w-100 h-100 start-0 top-0 bottom-0" style={{ zIndex: 2, padding: "0 10%" }}>
-                        <div className="animate-slide-up" style={{ maxWidth: '800px' }}>
-                            <span className="badge bg-danger-light text-danger px-3 py-2 rounded-pill mb-4 fw-bold small letter-spacing-wide">24/7 CRITICAL RESPONSE</span>
-                            <h1 className="fw-bold text-white mb-4 display-3 lh-tight">
-                                Resilience <br/><span className="text-danger">When It Matters Most.</span>
-                            </h1>
-                            <p className="fs-5 text-white-50 mb-5 max-w-lg">
-                                Integrated emergency units and specialized wards operational 24/7 with real-time health data sync.
-                            </p>
-                            <Link to="/register" className="btn btn-premium btn-danger px-5 py-3 fs-5">
-                                Emergency Access
-                            </Link>
-                        </div>
-                    </Carousel.Caption>
-                </Carousel.Item>
-            </Carousel>
+    const features = [
+        { icon: <FaCalendarCheck />, title: "Appointment Booking", desc: "Intuitive scheduling for patients and staff with real-time slot management." },
+        { icon: <FaFileMedical />, title: "Patient Records", desc: "Digital EHR system for secure storage and instant retrieval of clinical history." },
+        { icon: <FaCreditCard />, title: "Billing System", desc: "Automated invoicing and payment tracking with transparent clinical billing." },
+        { icon: <FaHospital />, title: "Ward Management", desc: "Real-time bed availability tracking and patient admission workflows." },
+        { icon: <FaBell />, title: "Notifications", desc: "Instant OTP-verified alerts and updates for clinical and billing events." },
+        { icon: <FaLock />, title: "Secure Login", desc: "Multi-factor OTP authentication protecting sensitive medical data." }
+    ];
 
-            {/* TRUST BAR */}
-            <div className="bg-white border-bottom py-4 shadow-sm">
+    const roles = [
+        { title: "Admin", icon: <FaShieldAlt />, capabilities: ["System Config", "Staff Records", "Billing Master", "Inventory Control"] },
+        { title: "Doctor", icon: <FaUserMd />, capabilities: ["Consultations", "E-Prescriptions", "Patient History", "Schedule Hub"] },
+        { title: "Patient", icon: <FaUserInjured />, capabilities: ["Quick Booking", "Medical Wallet", "History Access", "Bills Portal"] },
+        { title: "Nurse", icon: <FaUserNurse />, capabilities: ["Ward Update", "Vital Logs", "Patient Admit", "Medicine Chart"] }
+    ];
+
+    return (
+        <div className="landing-page-wrapper animate-fade-in">
+            {/* HERO SECTION */}
+            <section className="hero-section">
                 <Container>
-                    <Row className="text-center align-items-center g-4">
-                        <Col md={4} className="d-flex align-items-center justify-content-center gap-2">
-                            <FaAward className="text-primary" /> <span className="fw-bold text-muted small text-uppercase letter-spacing-wide">ISO 9001 Certified Clinic</span>
-                        </Col>
-                        <Col md={4} className="d-flex align-items-center justify-content-center gap-2 border-start border-end border-light">
-                            <FaShieldAlt className="text-primary" /> <span className="fw-bold text-muted small text-uppercase letter-spacing-wide">Encrypted Patient Data</span>
-                        </Col>
-                        <Col md={4} className="d-flex align-items-center justify-content-center gap-2">
-                            <FaAmbulance className="text-primary" /> <span className="fw-bold text-muted small text-uppercase letter-spacing-wide">Rapid Response Network</span>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-
-            {/* CORE SERVICES */}
-            <section className="py-5 my-5">
-                <Container>
-                    <Row className="g-4">
-                        <Col lg={4}>
-                            <div className="premium-card p-5 h-100 border-0 bg-white">
-                                <div className="bg-primary-light text-primary rounded-4 flex-center mb-4" style={{ width: '60px', height: '60px' }}>
-                                    <FaUserMd size={28} />
+                    <Row className="align-items-center">
+                        <Col lg={6} className="hero-content">
+                            <div className="hero-badge animate-slide-up">
+                                <span className="text-primary fw-bold">Enterprise Healthcare</span>
+                                <span className="opacity-50">|</span>
+                                <span>Version 4.0 Live</span>
+                            </div>
+                            <h1 className="hero-headline animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                                Smart Healthcare <br />Management System
+                            </h1>
+                            <p className="hero-subtext animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                                A powerful monolithic infrastructure to manage patients, appointments, billing, and specialized healthcare workflows in one unified terminal.
+                            </p>
+                            <div className="d-flex flex-wrap gap-3 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                                <Link to="/register" className="btn-premium btn-premium-primary py-3 px-5">
+                                    Get Started Free <FaArrowRight className="ms-2" />
+                                </Link>
+                                <Link to="/login" className="btn-premium btn-premium-outline py-3 px-5 bg-white">
+                                    Book Appointment
+                                </Link>
+                            </div>
+                            <div className="mt-5 d-flex align-items-center gap-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                                <div className="d-flex -space-x-2">
+                                    {[1,2,3].map(i => (
+                                        <img key={i} src={`https://i.pravatar.cc/100?img=${i+10}`} alt="user" className="rounded-circle border border-2 border-white" style={{ width: '40px', height: '40px' }} />
+                                    ))}
                                 </div>
-                                <h3 className="fw-bold mb-3">Distinguished Experts</h3>
-                                <p className="text-muted lh-lg mb-0">Direct access to a vetted network of clinical pioneers across every major specialty.</p>
+                                <span className="small text-muted fw-medium">Join 500+ clinics already digitizing care.</span>
                             </div>
                         </Col>
-                        <Col lg={4}>
-                            <div className="premium-card p-5 h-100 border-0 text-white" style={{ background: 'var(--primary-gradient)' }}>
-                                <div className="bg-white bg-opacity-20 text-white rounded-4 flex-center mb-4" style={{ width: '60px', height: '60px' }}>
-                                    <FaClock size={28} />
+                        <Col lg={6} className="mt-5 mt-lg-0 order-first order-lg-last">
+                            <div className="dashboard-preview-container" style={{ background: '#0f172a', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <img 
+                                    src="https://images.pexels.com/photos/7088530/pexels-photo-7088530.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+                                    alt="HMS Dashboard Preview" 
+                                    className="dashboard-img img-fluid"
+                                    style={{ width: '100%', height: 'auto', display: 'block' }}
+                                    onError={(e) => {
+                                        console.log("Image load failed, using fallback");
+                                        e.target.src = "https://placehold.co/800x600/0ea5e9/ffffff?text=Premium+HMS+Dashboard";
+                                    }}
+                                />
+                                <div className="position-absolute top-10 start-0 translate-middle-x animate-bounce d-none d-sm-block" style={{ animationDuration: '3s', zIndex: 10 }}>
+                                    <div className="glass-panel p-3 rounded-4 shadow-lg border border-white">
+                                        <div className="d-flex align-items-center gap-3">
+                                            <div className="bg-success-light text-success p-2 rounded-3"><FaCheckCircle /></div>
+                                            <div>
+                                                <div className="fw-bold small">Direct Sync</div>
+                                                <div className="text-muted" style={{ fontSize: '0.7rem' }}>Real-time Data Active</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 className="fw-bold mb-3">Instant Scheduling</h3>
-                                <p className="text-white-50 lh-lg mb-0">Seamlessly book and manage consultations through our intelligent digital terminal.</p>
-                            </div>
-                        </Col>
-                        <Col lg={4}>
-                            <div className="premium-card p-5 h-100 border-0 bg-white">
-                                <div className="bg-danger-light text-danger rounded-4 flex-center mb-4" style={{ width: '60px', height: '60px' }}>
-                                    <FaHeartbeat size={28} />
-                                </div>
-                                <h3 className="fw-bold mb-3">Unified Records</h3>
-                                <p className="text-muted lh-lg mb-0">Secure, portable health history that follows you across every clinical encounter.</p>
                             </div>
                         </Col>
                     </Row>
                 </Container>
             </section>
 
-            {/* DEPARTMENTS CINEMATIC */}
-            <section className="py-5 position-relative bg-dark">
-                <div className="position-absolute top-0 start-0 w-100 h-100 opacity-20" style={{ backgroundImage: `url(${departmentBg})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%)' }}></div>
-                <div className="position-absolute top-0 start-0 w-100 h-100 bg-gradient-to-b from-dark to-transparent"></div>
-                
-                <Container className="position-relative z-1 py-5">
-                    <div className="text-center mb-5 pb-4">
-                        <span className="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3 fw-bold small">CLINICAL EXCELLENCE</span>
-                        <h2 className="fw-bold text-white display-5">Specialized Care Wings</h2>
+            {/* FEATURES SECTION */}
+            <section className="py-8 bg-white">
+                <Container>
+                    <div className="text-center mb-8">
+                        <span className="section-tag">Powerful Modules</span>
+                        <h2 className="section-title">Comprehensive Clinical Toolbox</h2>
+                        <p className="text-muted max-w-lg mx-auto">Everything you need to run a high-performance modern healthcare facility.</p>
                     </div>
                     <Row className="g-4">
-                        {[
-                            { title: "Cardiology", icon: <FaHeartbeat/>, desc: "Precision cardiac diagnostic and surgical interventions." },
-                            { title: "Neurology", icon: <FaBrain/>, desc: "Complex neuro-restorative and stroke therapy." },
-                            { title: "Orthopedics", icon: <FaBone/>, desc: "Advanced trauma and elective replacement surgery." },
-                            { title: "Pulmonology", icon: <FaLungs/>, desc: "Critical respiratory and lung health management." },
-                            { title: "Dental Care", icon: <FaTooth/>, desc: "Cosmetic and restorative oral health solutions." },
-                            { title: "General Care", icon: <FaStethoscope/>, desc: "Comprehensive diagnostic and internal medicine." }
-                        ].map((dept, i) => (
+                        {features.map((feat, i) => (
                             <Col md={6} lg={4} key={i}>
-                                <div className="premium-card p-4 border border-secondary border-opacity-20 bg-dark bg-opacity-40 text-white h-100 transition-hover" style={{ backdropFilter: 'blur(10px)' }}>
-                                    <div className="text-primary mb-4">
-                                        {React.cloneElement(dept.icon, { size: 36 })}
-                                    </div>
-                                    <h4 className="fw-bold mb-3">{dept.title}</h4>
-                                    <p className="text-white-50 small mb-0">{dept.desc}</p>
+                                <div className="feature-card">
+                                    <div className="feature-icon-box">{feat.icon}</div>
+                                    <h4 className="fw-bold mb-3">{feat.title}</h4>
+                                    <p className="text-muted small lh-lg mb-0">{feat.desc}</p>
                                 </div>
                             </Col>
                         ))}
@@ -169,33 +135,38 @@ const LandingPage = () => {
                 </Container>
             </section>
 
-            {/* TESTIMONIALS GLASS */}
-            <section className="py-5 bg-light position-relative">
-                <Container className="py-5">
+            {/* ROLE-BASED ACCESS */}
+            <section className="py-8 bg-app">
+                <Container>
                     <Row className="align-items-center g-5">
-                        <Col lg={4}>
-                            <span className="badge bg-primary-light text-primary px-3 py-2 rounded-pill mb-3 fw-bold small">PATIENT VOICES</span>
-                            <h2 className="fw-bold display-4 text-dark mb-4">Stories of Recovery</h2>
-                            <p className="text-muted fs-5 lh-lg mb-5">Hear from the patients who have experienced the future of integrated healthcare through our system.</p>
-                            <Link to="/register" className="btn btn-premium btn-premium-primary px-5 py-3">Register Now</Link>
+                        <Col lg={5}>
+                            <span className="section-tag">Multi-User Access</span>
+                            <h2 className="section-title">Designed for Every Medical Persona</h2>
+                            <p className="text-muted lh-lg mb-5">Our portal provides tailored interfaces and tools specifically optimized for different operational roles. Security and efficiency at every level.</p>
+                            <div className="p-4 bg-primary-light rounded-4 border border-primary border-opacity-10 d-flex gap-4">
+                                <div className="text-primary fs-3"><FaShieldAlt /></div>
+                                <div>
+                                    <h6 className="fw-bold">Enterprise Security</h6>
+                                    <p className="small text-muted mb-0">Role-based access control (RBAC) ensures medical privacy compliance.</p>
+                                </div>
+                            </div>
                         </Col>
-                        <Col lg={8}>
+                        <Col lg={7}>
                             <Row className="g-4">
-                                {[
-                                    { name: "John Doe", role: "Critical Care", text: "The real-time synchronization of my vital data across the dashboard saved my family so much stress.", pic: testimonial1 },
-                                    { name: "Maria Garcia", role: "Surgery", text: "Dr. Jenkins was exceptional, and the transparent billing portal is exactly what hospitals need today.", pic: testimonial2 }
-                                ].map((test, i) => (
-                                    <Col md={12} key={i}>
-                                        <div className="premium-card p-5 border-0 bg-white shadow-sm flex-center gap-4 text-start">
-                                            <img src={test.pic} alt={test.name} className="rounded-circle shadow-sm border border-4 border-white" style={{ width: '80px', height: '80px', objectFit: 'cover' }} />
-                                            <div>
-                                                <FaQuoteLeft className="text-primary opacity-20 mb-3" size={24} />
-                                                <p className="fw-medium text-dark fs-5 mb-3 italic">"{test.text}"</p>
-                                                <div className="d-flex align-items-center justify-content-between">
-                                                    <h6 className="fw-bold mb-0">{test.name} <span className="fw-normal text-muted ms-2">• {test.role}</span></h6>
-                                                    <div className="text-warning small"><FaStar/><FaStar/><FaStar/><FaStar/><FaStar/></div>
-                                                </div>
+                                {roles.map((role, i) => (
+                                    <Col sm={6} key={i}>
+                                        <div className="role-card">
+                                            <div className="role-card-header">
+                                                <div className="role-icon">{role.icon}</div>
+                                                <h5 className="fw-bold mb-0">{role.title}</h5>
                                             </div>
+                                            <ul className="role-capability-list">
+                                                {role.capabilities.map((cap, j) => (
+                                                    <li key={j} className="role-capability-item">
+                                                        <FaCheckCircle size={12} /> {cap}
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     </Col>
                                 ))}
@@ -205,64 +176,165 @@ const LandingPage = () => {
                 </Container>
             </section>
 
-            {/* CTA */}
-            <section className="py-5 my-5">
+            {/* HOW IT WORKS */}
+            <section className="py-8 bg-white overflow-hidden">
                 <Container>
-                    <div className="rounded-5 p-5 text-center text-white position-relative overflow-hidden" style={{ background: 'var(--primary-gradient)' }}>
-                        <FaStethoscope size={300} className="position-absolute text-white opacity-10" style={{ right: '-50px', bottom: '-80px', transform: 'rotate(-20deg)' }} />
-                        <div className="position-relative z-10 py-4">
-                            <h2 className="display-3 fw-bold mb-4">Ready for Smarter Care?</h2>
-                            <p className="fs-5 opacity-75 max-w-lg mx-auto mb-5 lh-lg">Join thousands of patients who manage their clinical records, appointments, and billing through our unified medical infrastructure.</p>
-                            <Link to="/register" className="btn btn-premium btn-light text-primary px-5 py-3 fs-5 fw-bold">Create Free Account</Link>
+                    <div className="text-center mb-8">
+                        <span className="section-tag">Clinical Journey</span>
+                        <h2 className="section-title">How It Works</h2>
+                    </div>
+                    <Row className="g-4">
+                        {[
+                            { step: "1", title: "Secure Onboarding", desc: "Register and verify your identity via our encrypted OTP system." },
+                            { step: "2", title: "Smart Scheduling", desc: "Book appointments with top clinical experts across specialties." },
+                            { step: "3", title: "Unified Treatment", desc: "Access care and get real-time vital tracking and prescriptions." },
+                            { step: "4", title: "Record Management", desc: "Manage billing, medical history, and discharge from one portal." }
+                        ].map((item, i) => (
+                            <Col lg={3} md={6} key={i}>
+                                <div className="step-container">
+                                    {i < 3 && <div className="step-line"></div>}
+                                    <div className="step-number">{item.step}</div>
+                                    <div className="step-card">
+                                        <h6 className="fw-bold mb-2">{item.title}</h6>
+                                        <p className="small text-muted mb-0">{item.desc}</p>
+                                    </div>
+                                </div>
+                            </Col>
+                        ))}
+                    </Row>
+                </Container>
+            </section>
+
+            {/* STATS SECTION */}
+            <section className="py-8">
+                <Container>
+                    <div className="stats-banner shadow-premium">
+                        <Row className="g-4 g-lg-0">
+                            <Col sm={6} lg={3} className="stat-item border-lg-end border-white border-opacity-20">
+                                <span className="stat-value">{counts.patients.toLocaleString()}+</span>
+                                <span className="stat-label">Active Patients</span>
+                            </Col>
+                            <Col sm={6} lg={3} className="stat-item border-lg-end border-white border-opacity-20">
+                                <span className="stat-value">{counts.doctors.toLocaleString()}+</span>
+                                <span className="stat-label">Specialist Doctors</span>
+                            </Col>
+                            <Col sm={6} lg={3} className="stat-item border-lg-end border-white border-opacity-20">
+                                <span className="stat-value">{counts.appointments.toLocaleString()}+</span>
+                                <span className="stat-label">Booked Visits</span>
+                            </Col>
+                            <Col sm={6} lg={3} className="stat-item">
+                                <span className="stat-value">{counts.hospitals.toLocaleString()}+</span>
+                                <span className="stat-label">Clinical Partners</span>
+                            </Col>
+                        </Row>
+                    </div>
+                </Container>
+            </section>
+
+            {/* TESTIMONIALS */}
+            <section className="py-8 bg-app">
+                <Container>
+                    <Row className="g-5 align-items-center">
+                        <Col lg={4}>
+                            <span className="section-tag">Clinical Feedback</span>
+                            <h2 className="section-title">Trusted by the Best in Healthcare</h2>
+                            <p className="text-muted lh-lg">Join 12,000+ professionals who have transformed their clinical operations using HMSPro.</p>
+                            <div className="d-flex gap-2 text-warning fs-5">
+                                {[1,2,3,4,5].map(i => <FaArrowRight style={{ transform: 'rotate(-45deg)', fontSize: '1rem' }} key={i}/>)}
+                            </div>
+                        </Col>
+                        <Col lg={8}>
+                            <Row className="g-4">
+                                <Col md={6}>
+                                    <Card className="premium-card p-4 h-100 border-0">
+                                        <div className="d-flex align-items-center gap-3 mb-3">
+                                            <img src="https://i.pravatar.cc/150?img=32" alt="doctor" className="rounded-circle" style={{ width: '50px' }} />
+                                            <div>
+                                                <h6 className="fw-bold mb-0">Dr. Sarah Johnson</h6>
+                                                <span className="small text-muted">Senior Surgeon</span>
+                                            </div>
+                                        </div>
+                                        <p className="small text-muted lh-lg mb-0 italic font-serif">"The monolithic architecture gives us insane speed. Real-time patient lookup and prescription syncing have reduced our turnaround time by 40%."</p>
+                                    </Card>
+                                </Col>
+                                <Col md={6}>
+                                    <Card className="premium-card p-4 h-100 border-0">
+                                        <div className="d-flex align-items-center gap-3 mb-3">
+                                            <img src="https://i.pravatar.cc/150?img=12" alt="doctor" className="rounded-circle" style={{ width: '50px' }} />
+                                            <div>
+                                                <h6 className="fw-bold mb-0">Michael Chen</h6>
+                                                <span className="small text-muted">Clinical Director</span>
+                                            </div>
+                                        </div>
+                                        <p className="small text-muted lh-lg mb-0 italic">"Security was our top priority. The OTP authentication and detailed RBAC audit logs make this the most secure portal we've ever used."</p>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Container>
+            </section>
+
+            {/* CTA SECTION */}
+            <section className="py-8">
+                <Container>
+                    <div className="cta-banner shadow-premium">
+                        <div className="cta-content px-4">
+                            <h2 className="display-4 fw-bold text-white mb-4">Start Managing Healthcare Smartly Today</h2>
+                            <p className="text-white-50 max-w-lg mx-auto mb-5 fs-5">Digitize your clinical records and streamline your patient journey with our all-in-one terminal.</p>
+                            <div className="d-flex flex-wrap justify-content-center gap-3">
+                                <Link to="/register" className="btn-premium btn-premium-primary py-3 px-5">
+                                    Create Free Account
+                                </Link>
+                                <Link to="/login" className="btn-premium btn-premium-outline py-3 px-5 text-white border-white">
+                                    Portal Login
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </Container>
             </section>
 
             {/* FOOTER */}
-            <footer className="bg-dark text-white py-5">
-                <Container className="py-5">
+            <footer className="py-8 border-top border-light">
+                <Container>
                     <Row className="g-5">
                         <Col lg={4}>
                             <div className="d-flex align-items-center gap-2 mb-4">
-                                <FaHospitalAlt className="text-primary" size={24} />
-                                <h4 className="fw-bold mb-0">HMS<span className="opacity-50">Pro</span></h4>
+                                <div className="bg-primary p-1 rounded-3"><FaBriefcaseMedical className="text-white" /></div>
+                                <h4 className="fw-bold mb-0">HMS<span className="text-primary">Pro</span></h4>
                             </div>
-                            <p className="text-white-50 lh-lg pe-lg-5">A state-of-the-art monolithic healthcare management system designed for clinical precision and operational excellence.</p>
+                            <p className="text-muted small lh-lg pe-lg-5">A high-fidelity monolithic healthcare management system designed for precision clinical operations and superior patient care.</p>
                         </Col>
-                        <Col sm={6} lg={4}>
-                            <h5 className="fw-bold mb-4">Facility Links</h5>
-                            <div className="row">
-                                <div className="col-6">
-                                    <ul className="list-unstyled d-flex flex-column gap-3 text-white-50">
-                                        <li><Link to="/login" className="text-white-50 text-decoration-none hover-white">Patient Portal</Link></li>
-                                        <li><Link to="/login" className="text-white-50 text-decoration-none hover-white">Doctor Login</Link></li>
-                                        <li><Link to="/login" className="text-white-50 text-decoration-none hover-white">Staff Terminal</Link></li>
-                                    </ul>
-                                </div>
-                                <div className="col-6">
-                                    <ul className="list-unstyled d-flex flex-column gap-3 text-white-50">
-                                        <li>Cardiology</li>
-                                        <li>Neurology</li>
-                                        <li>Emergency</li>
-                                    </ul>
-                                </div>
-                            </div>
+                        <Col sm={4} lg={2}>
+                            <h6 className="fw-bold mb-4">Navigation</h6>
+                            <ul className="list-unstyled d-flex flex-column gap-3 small text-muted">
+                                <li><Link to="/" className="text-decoration-none text-muted">Home</Link></li>
+                                <li><Link to="/login" className="text-decoration-none text-muted">Sign In</Link></li>
+                                <li><Link to="/register" className="text-decoration-none text-muted">Get Started</Link></li>
+                            </ul>
                         </Col>
-                        <Col sm={6} lg={4}>
-                            <h5 className="fw-bold mb-4">Contact Terminal</h5>
-                            <p className="text-white-50 mb-4 fw-medium">123 Clinical Plaza, Medical Square<br/>New York, NY 10001</p>
-                            <h4 className="fw-bold">1-800-HMS-PRO</h4>
+                        <Col sm={4} lg={2}>
+                            <h6 className="fw-bold mb-4">Legal</h6>
+                            <ul className="list-unstyled d-flex flex-column gap-3 small text-muted">
+                                <li>Privacy Policy</li>
+                                <li>Terms of Service</li>
+                                <li>Security Protocol</li>
+                            </ul>
+                        </Col>
+                        <Col sm={4} lg={4}>
+                            <h6 className="fw-bold mb-4">Connect Terminal</h6>
+                            <p className="small text-muted mb-4">Digital Health District, Clinical Square 101, <br />New York City, NY</p>
+                            <h5 className="fw-bold">1-800-HMS-CORP</h5>
                         </Col>
                     </Row>
-                    <div className="border-top border-white border-opacity-10 mt-5 pt-4 text-center text-white-50 small">
-                        &copy; 2026 HMSPro Systems. Digital Health Infrastructure by Khushavnt-Cognitiona.
+                    <div className="mt-8 pt-4 border-top border-light text-center small text-muted">
+                        &copy; 2026 HMSPro Infrastructure. Built for Clinical Excellence by Khushavnt-Cognitiona.
                     </div>
                 </Container>
             </footer>
-        </main>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default LandingPage;
