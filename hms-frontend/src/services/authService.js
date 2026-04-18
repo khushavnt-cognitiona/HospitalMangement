@@ -28,7 +28,32 @@ const login = async (credentials) => {
   }
 };
 
+const sendOtp = async (target) => {
+  try {
+    const response = await axiosInstance.post("auth/send-otp", target);
+    return response.data;
+  } catch (error) {
+    console.error("OTP send error:", error);
+    throw error;
+  }
+};
+
+const verifyOtp = async (verificationData) => {
+  try {
+    const response = await axiosInstance.post("auth/verify-otp", verificationData);
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+    return response.data;
+  } catch (error) {
+    console.error("OTP verification error:", error);
+    throw error;
+  }
+};
+
 const logout = () => {
+// ... existing logout code
   localStorage.removeItem("token");
   localStorage.removeItem("user");
 };
@@ -40,6 +65,8 @@ const getCurrentUser = () => {
 export default {
   register,
   login,
+  sendOtp,
+  verifyOtp,
   logout,
   getCurrentUser,
 };

@@ -97,6 +97,16 @@ public class AppointmentController {
         return ResponseEntity.ok(service.updateStatus(id, status));
     }
 
+    @PostMapping("/verify-booking-otp")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<String> verifyBookingOtp(@RequestParam("appointmentId") Long appointmentId, @RequestParam("otp") String otp) {
+        boolean isVerified = service.verifyBookingOtp(appointmentId, otp);
+        if (isVerified) {
+            return ResponseEntity.ok("Appointment confirmed successfully");
+        }
+        return ResponseEntity.badRequest().body("Invalid or expired OTP");
+    }
+
     @Data
     public static class BookingRequest {
         @NotNull(message = "Specialist selection is required")

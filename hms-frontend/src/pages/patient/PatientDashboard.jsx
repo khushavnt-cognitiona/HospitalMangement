@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Row, Col, Spinner } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import patientService from '../../services/patientService';
 import appointmentService from '../../services/appointmentService';
 import recordService from '../../services/recordService';
@@ -59,43 +59,53 @@ const PatientDashboard = () => {
     }, [user?.id]);
 
     if (loading) return (
-        <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
-            <Spinner animation="grow" variant="primary" />
-            <p className="mt-3 fw-bold text-primary">Synchronizing clinical data...</p>
+        <div className="flex-center animate-fade-in" style={{ minHeight: '80vh', flexDirection: 'column' }}>
+            <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+                <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="fw-semibold text-muted">Synchronizing your medical data...</p>
         </div>
     );
 
+    const patientName = profile?.name || user?.name || 'Patient';
+
     return (
-        <PatientLayout 
-            title="Health Control Center" 
-            subtitle={`Hello, ${profile?.name || user?.name || 'Patient'}. Your health dashboard is fully synchronized.`}
-        >
-            {/* Modular Statistics Section */}
-            <Row className="g-4 mb-5">
-                <DashboardStats 
-                    visitCount={appointments.length} 
-                    recordCount={records.length} 
-                    plan="PRO+" 
-                />
-            </Row>
-
-            <Row className="g-4">
-                {/* Modular Recent Visits Section */}
-                <Col lg={8}>
-                    <RecentVisits 
-                        appointments={appointments} 
-                        navigate={navigate} 
+        <div className="animate-slide-up">
+            <PatientLayout 
+                title={`Welcome back, ${patientName.split(' ')[0]}`} 
+                subtitle="Your health control center is fully synchronized and up to date."
+            >
+                {/* Modular Statistics Section */}
+                <div className="mb-5">
+                    <DashboardStats 
+                        visitCount={appointments.length} 
+                        recordCount={records.length} 
+                        plan="PREMIUM+" 
                     />
-                </Col>
+                </div>
 
-                {/* Modular EHR & Health Tip Section */}
-                <Col lg={4}>
-                    <EHRTimeline 
-                        records={records} 
-                    />
-                </Col>
-            </Row>
-        </PatientLayout>
+                <Row className="g-4">
+                    {/* Modular Recent Visits Section */}
+                    <Col lg={8}>
+                        <div className="premium-card p-0 h-100 overflow-hidden shadow-sm">
+                            <RecentVisits 
+                                appointments={appointments} 
+                                navigate={navigate} 
+                            />
+                        </div>
+                    </Col>
+
+                    {/* Modular EHR & Health Tip Section */}
+                    <Col lg={4}>
+                        <div className="premium-card p-4 h-100 shadow-sm">
+                            <EHRTimeline 
+                                records={records} 
+                            />
+                        </div>
+                    </Col>
+                </Row>
+            </PatientLayout>
+        </div>
     );
 };
 

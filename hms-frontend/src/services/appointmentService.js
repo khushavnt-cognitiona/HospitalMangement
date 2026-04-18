@@ -60,6 +60,16 @@ const lockSlot = async (slotId, userId) => {
   }
 };
 
+const verifyBookingOtp = async (appointmentId, otp) => {
+  try {
+    const response = await axiosInstance.post(`appointments/verify-booking-otp?appointmentId=${appointmentId}&otp=${otp}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying booking OTP:", error);
+    throw error;
+  }
+};
+
 export default {
   bookAppointment,
   getDoctorAppointments,
@@ -67,4 +77,5 @@ export default {
   updateAppointmentStatus,
   getAvailableSlots,
   lockSlot,
+  verifyBookingOtp,
 };

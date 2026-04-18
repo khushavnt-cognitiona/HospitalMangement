@@ -6,8 +6,10 @@ import {
   FaUserNurse, FaUserCog, FaUser, FaUserInjured
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from './layout/NotificationBell';
 
 const roleConfig = {
+// ...
     PATIENT: { color: '#1976d2', label: 'Patient', dashPath: '/patient/dashboard', icon: FaUserInjured },
     DOCTOR:  { color: '#2e7d32', label: 'Doctor',  dashPath: '/doctor/dashboard',  icon: FaUserMd },
     NURSE:   { color: '#00838f', label: 'Nurse',   dashPath: '/nurse/dashboard',   icon: FaUserNurse },
@@ -89,6 +91,8 @@ const AppNavbar = () => {
                                         <FaCalendarPlus /> BOOK APPOINTMENT
                                     </Button>
                                 )}
+                                
+                                <NotificationBell />
                                 
                                 <Dropdown align="end" className="user-profile-dropdown">
                                     <Dropdown.Toggle as="div" className="d-flex align-items-center gap-3 cursor-pointer user-toggle-pill">

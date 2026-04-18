@@ -22,8 +22,9 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository repository;
-    private final NotificationRepository notificationRepository;
     private final DoctorRepository doctorRepository;
+    private final com.hms.service.OtpService otpService;
+    private final com.hms.service.NotificationService notificationService;
 
     @Override
     public Appointment bookAppointment(Doctor doctor, Patient patient, LocalDateTime slotTime, String reason) {
@@ -34,31 +35,46 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .appointmentDate(slotTime.toLocalDate())
                 .appointmentTime(slotTime.toLocalTime().toString())
                 .reason(reason)
-                .status(AppointmentStatus.BOOKED)
+                .status(AppointmentStatus.PENDING_VERIFICATION)
                 .build();
 
         Appointment savedAppointment = repository.save(appointment);
         
-        // Send notifications wrapped in try-catch to avoid crashing booking on notification failure
-        try {
-            String patientName = (patient.getUser() != null && patient.getUser().getName() != null) 
-                                 ? patient.getUser().getName() : "Patient";
-            String doctorName = (doctor.getUser() != null && doctor.getUser().getName() != null) 
-                                ? doctor.getUser().getName() : "Specialist";
-            
-            if (doctor.getUser() != null) {
-                sendNotification(doctor.getUser(),
-                        "New appointment booked with " + patientName + " at " + slotTime);
-            }
-            if (patient.getUser() != null) {
-                sendNotification(patient.getUser(),
-                        "Your appointment with Dr. " + doctorName + " is confirmed for " + slotTime);
-            }
-        } catch (Exception e) {
-            System.err.println("WARN: Notification sending failed but appointment was booked: " + e.getMessage());
+        // Trigger OTP for booking confirmation
+        if (patient.getUser() != null && patient.getUser().getEmail() != null) {
+            otpService.generateOtp(patient.getUser().getEmail());
         }
 
         return savedAppointment;
+    }
+
+    @Override
+    public boolean verifyBookingOtp(Long appointmentId, String otp) {
+        Appointment appointment = repository.findById(appointmentId).orElseThrow();
+        if (appointment.getStatus() != AppointmentStatus.PENDING_VERIFICATION) {
+            return false;
+        }
+
+        User patientUser = appointment.getPatient().getUser();
+        if (patientUser != null && otpService.verifyOtp(patientUser.getEmail(), otp)) {
+            appointment.setStatus(AppointmentStatus.BOOKED);
+            repository.save(appointment);
+
+            // Send Final Confirmation Notifications
+            String doctorName = appointment.getDoctor().getUser() != null ? appointment.getDoctor().getUser().getName() : "Specialist";
+            String patientName = patientUser.getName() != null ? patientUser.getName() : "Patient";
+
+            notificationService.createNotification(appointment.getDoctor().getUser(), 
+                "Confirmed: New appointment with " + patientName + " at " + appointment.getSlotTime(),
+                NotificationType.IN_APP);
+            
+            notificationService.createNotification(patientUser, 
+                "Verified: Your appointment with Dr. " + doctorName + " is confirmed for " + appointment.getSlotTime(),
+                NotificationType.IN_APP);
+
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -77,21 +93,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setStatus(status);
 
         String msg = "Appointment status updated to " + status;
-        sendNotification(appointment.getDoctor().getUser(), msg);
-        sendNotification(appointment.getPatient().getUser(), msg);
+        notificationService.createNotification(appointment.getDoctor().getUser(), msg, NotificationType.IN_APP);
+        notificationService.createNotification(appointment.getPatient().getUser(), msg, NotificationType.IN_APP);
 
         return repository.save(appointment);
-    }
-
-    private void sendNotification(User user, String message) {
-        Notification notification = Notification.builder()
-                .user(user)
-                .message(message)
-                .type(NotificationType.IN_APP)
-                .readStatus(false)
-                .timestamp(LocalDateTime.now())
-                .build();
-        notificationRepository.save(notification);
     }
 
     @Override
@@ -146,7 +151,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                             // Pad time if needed (e.g., "9:00" -> "09:00")
                             String paddedTime = s.length() == 4 && s.contains(":") && s.indexOf(":") == 1 ? "0" + s : s;
                             LocalTime time = LocalTime.parse(paddedTime);
-                            LocalDateTime slotDateTime = LocalDateTime.of(date, time);
                             
                             boolean isBooked = false;
                             if (existingAppointments != null) {

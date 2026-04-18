@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Badge } from 'react-bootstrap';
-import { FaCalendarAlt, FaUserMd } from 'react-icons/fa';
+import { Button } from 'react-bootstrap';
+import { FaCalendarAlt, FaUserMd, FaChevronRight, FaPlus } from 'react-icons/fa';
 import AppointmentDetailsModal from './AppointmentDetailsModal';
 
 const RecentVisits = ({ appointments, navigate }) => {
@@ -13,64 +13,72 @@ const RecentVisits = ({ appointments, navigate }) => {
     };
 
     return (
-        <div className="patient-content-card">
-            <div className="patient-card-header">
+        <div className="section-card">
+            <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h4 className="patient-card-title">Recent Visits</h4>
-                    <p className="text-muted small mb-0 fw-bold">Monitoring your latest clinic activities</p>
+                    <h4 className="section-title mb-0">
+                        <FaCalendarAlt className="text-primary" /> Upcoming Appointments
+                    </h4>
+                    <p className="text-muted small mb-0 fw-semibold">Manage your scheduled clinical sessions</p>
                 </div>
                 <Button 
-                    variant="primary" 
-                    className="rounded-pill px-4 fw-bold shadow-sm"
+                    className="btn-premium btn-premium-primary rounded-pill px-4 d-flex align-items-center gap-2"
                     onClick={() => navigate('/patient/book')}
                 >
-                    <FaCalendarAlt className="me-2" /> Book New
+                    <FaPlus size={14} /> Book New
                 </Button>
             </div>
             
-            {appointments.length > 0 ? (
-                <div className="table-responsive">
-                    <table className="table table-hover align-middle mb-0">
+            {appointments && appointments.length > 0 ? (
+                <div className="table-responsive" style={{ margin: '0 -4px' }}>
+                    <table className="premium-table">
                         <thead>
-                            <tr>
-                                <th>Consultant</th>
-                                <th>Clinical Reason</th>
-                                <th>Date & Status</th>
-                                <th>Action</th>
+                            <tr className="text-muted small text-uppercase fw-bold letter-spacing-wide">
+                                <th className="ps-4 pb-3">Consultant</th>
+                                <th className="pb-3">Reason</th>
+                                <th className="pb-3">Date</th>
+                                <th className="pb-3">Status</th>
+                                <th className="pe-4 pb-3 text-end">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {appointments.map((appt, i) => (
-                                <tr key={i}>
+                                <tr key={i} className="animate-in" style={{ animationDelay: `${i * 0.05}s` }}>
                                     <td>
                                         <div className="d-flex align-items-center gap-3">
-                                            <div className="bg-light p-2 rounded-circle">
-                                                <FaUserMd className="text-primary" />
+                                            <div className="profile-avatar-circle" style={{ width: '40px', height: '40px', fontSize: '1rem' }}>
+                                                <FaUserMd />
                                             </div>
                                             <div>
-                                                <div className="fw-800 text-dark">{appt.doctorName || appt.doctor?.user?.name || 'Medical Specialist'}</div>
-                                                <div className="text-muted small fw-bold">Specialist</div>
+                                                <div className="fw-bold text-dark">{appt.doctorName || appt.doctor?.user?.name || 'Specialist'}</div>
+                                                <div className="text-muted extra-small fw-bold">Healthcare Provider</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <div className="fw-bold text-secondary">{appt.symptoms || appt.reason || 'Routine Checkup'}</div>
+                                        <div className="small fw-semibold text-secondary">{appt.symptoms || appt.reason || 'Medical Consult'}</div>
                                     </td>
                                     <td>
-                                        <div className="fw-800 text-dark mb-1">
-                                            {new Date(appt.appointmentDate || appt.slotTime || appt.appointmentTime).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })}
+                                        <div className="small fw-bold text-dark">
+                                            {new Date(appt.appointmentDate || appt.slotTime || appt.appointmentTime).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}
                                         </div>
-                                        <Badge className={`rounded-pill px-3 py-1 ${appt.status === 'CONFIRMED' || appt.status === 'COMPLETED' || appt.status === 'BOOKED' ? 'bg-success bg-opacity-10 text-success' : 'bg-warning bg-opacity-10 text-warning'}`}>
-                                            {appt.status}
-                                        </Badge>
                                     </td>
                                     <td>
+                                        <span className={`badge rounded-pill px-3 py-1 ${
+                                            appt.status === 'CONFIRMED' || appt.status === 'COMPLETED' || appt.status === 'BOOKED' 
+                                            ? 'bg-success-light text-success' 
+                                            : 'bg-warning-light text-warning'
+                                        }`} style={{ fontSize: '0.7rem', fontWeight: '800' }}>
+                                            {appt.status}
+                                        </span>
+                                    </td>
+                                    <td className="text-end pe-4">
                                         <Button 
                                             variant="link" 
-                                            className="p-0 text-primary fw-bold text-decoration-none"
+                                            className="p-2 text-primary hover-scale transition-all"
                                             onClick={() => handleOpenDetails(appt)}
                                         >
-                                            Details
+                                            <FaChevronRight />
                                         </Button>
                                     </td>
                                 </tr>
@@ -79,13 +87,17 @@ const RecentVisits = ({ appointments, navigate }) => {
                     </table>
                 </div>
             ) : (
-                <div className="empty-state-container text-center py-5">
-                    <div className="empty-state-icon mb-3 opacity-20">
-                        <FaCalendarAlt size={48} />
+                <div className="text-center py-5">
+                    <div className="bg-light rounded-circle flex-center mx-auto mb-4" style={{ width: '80px', height: '80px', opacity: 0.5 }}>
+                        <FaCalendarAlt size={32} className="text-muted" />
                     </div>
                     <h5 className="fw-bold text-dark">No upcoming sessions</h5>
-                    <p className="text-muted small mb-4">You haven't booked any appointments yet. Start your journey today.</p>
-                    <Button variant="outline-primary" className="rounded-pill px-4 fw-bold border-2" onClick={() => navigate('/patient/book')}>
+                    <p className="text-muted small mb-4 mx-auto" style={{ maxWidth: '300px' }}>Your medical calendar is currently clear. Keeping up with regular checkups is vital for health.</p>
+                    <Button 
+                        variant="outline-primary" 
+                        className="rounded-pill px-4 fw-bold border-2" 
+                        onClick={() => navigate('/patient/book')}
+                    >
                         Schedule First Appointment
                     </Button>
                 </div>
@@ -97,6 +109,13 @@ const RecentVisits = ({ appointments, navigate }) => {
                 onHide={() => setShowModal(false)}
                 appointment={selectedAppt}
             />
+            
+            <style>{`
+                .bg-success-light { background: #dcfce7 !important; }
+                .bg-warning-light { background: #fef9c3 !important; }
+                .letter-spacing-wide { letter-spacing: 0.05em; }
+                .hover-scale:hover { transform: translateX(4px); }
+            `}</style>
         </div>
     );
 };

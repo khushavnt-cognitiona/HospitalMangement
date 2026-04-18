@@ -12,5 +12,6 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsByPatient(Patient patient);
     Appointment updateStatus(Long id, AppointmentStatus status);
     List<SlotDTO> getAvailableSlots(Long doctorId, LocalDate date);
+    boolean verifyBookingOtp(Long appointmentId, String otp);
 }
 

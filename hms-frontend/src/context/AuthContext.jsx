@@ -19,6 +19,12 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  const loginWithOtp = async (verificationData) => {
+    const data = await authService.verifyOtp(verificationData);
+    setUser(data);
+    return data;
+  };
+
   const register = async (userData) => {
     const data = await authService.register(userData);
     setUser(data);

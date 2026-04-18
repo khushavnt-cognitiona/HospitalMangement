@@ -18,8 +18,12 @@ const BookAppointment = () => {
     const [error, setError] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [bookedId, setBookedId] = useState(null);
+    const [showOtpModal, setShowOtpModal] = useState(false);
+    const [otp, setOtp] = useState('');
+    const [verifying, setVerifying] = useState(false);
 
     const [form, setForm] = useState({
+// ... (existing form state)
         doctorId: '',
         date: '',
         timeId: '',
@@ -27,38 +31,8 @@ const BookAppointment = () => {
         reason: ''
     });
 
-    useEffect(() => {
-        const fetchDoctors = async () => {
-            try {
-                const data = await doctorService.getAllDoctors();
-                setDoctors(data);
-            } catch (err) {
-                setError('Failed to fetch clinical specialist data.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchDoctors();
-    }, []);
-
-    useEffect(() => {
-        if (form.doctorId && form.date) {
-            const fetchSlots = async () => {
-                setLoadingSlots(true);
-                try {
-                    const slots = await doctorService.getAvailability(form.doctorId, form.date);
-                    setAvailableSlots(slots);
-                } catch (err) {
-                    setError('Clinical availability scanning failed.');
-                } finally {
-                    setLoadingSlots(false);
-                }
-            };
-            fetchSlots();
-        }
-    }, [form.doctorId, form.date]);
-
     const handleDoctorSelect = (doc) => {
+// ...
         setForm({ ...form, doctorId: doc.id, time: '', timeId: '' });
         setStep(2);
     };
@@ -70,6 +44,8 @@ const BookAppointment = () => {
 
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
+        setLoading(true);
+        setError('');
         try {
             const appointmentData = {
                 doctorId: form.doctorId,
@@ -79,14 +55,34 @@ const BookAppointment = () => {
             };
             const res = await appointmentService.bookAppointment(appointmentData);
             setBookedId(res.id);
-            setSubmitted(true);
+            setShowOtpModal(true);
         } catch (err) {
             const backendMessage = err.response?.data?.message;
             setError(backendMessage || 'Transaction failed. Please check your data.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading) return (
+    const handleVerifyOtp = async () => {
+        if (otp.length !== 6) {
+            setError('Please enter a valid 6-digit OTP code.');
+            return;
+        }
+        setVerifying(true);
+        setError('');
+        try {
+            await appointmentService.verifyBookingOtp(bookedId, otp);
+            setSubmitted(true);
+            setShowOtpModal(false);
+        } catch (err) {
+            setError('Verification failed. The code might be incorrect or expired.');
+        } finally {
+            setVerifying(false);
+        }
+    };
+
+    if (loading && !showOtpModal && !submitted) return (
         <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
             <Spinner animation="grow" variant="info" />
         </div>
@@ -106,19 +102,66 @@ const BookAppointment = () => {
                             navigate={navigate} 
                         />
                     ) : (
-                        <BookingSteps 
-                            step={step}
-                            setStep={setStep}
-                            doctors={doctors}
-                            availableSlots={availableSlots}
-                            loadingSlots={loadingSlots}
-                            error={error}
-                            form={form}
-                            setForm={setForm}
-                            handleDoctorSelect={handleDoctorSelect}
-                            handleSlotClick={handleSlotClick}
-                            handleSubmit={handleSubmit}
-                        />
+                        <>
+                            <BookingSteps 
+                                step={step}
+                                setStep={setStep}
+                                doctors={doctors}
+                                availableSlots={availableSlots}
+                                loadingSlots={loadingSlots}
+                                error={error}
+                                form={form}
+                                setForm={setForm}
+                                handleDoctorSelect={handleDoctorSelect}
+                                handleSlotClick={handleSlotClick}
+                                handleSubmit={handleSubmit}
+                            />
+
+                            {showOtpModal && (
+                                <div className="otp-overlay animate-fade-in shadow-2xl">
+                                    <div className="otp-modal-content rounded-5 p-5 bg-white text-center shadow-lg">
+                                        <div className="mb-4">
+                                            <div className="bg-primary-soft text-primary p-3 rounded-circle d-inline-block mb-3">
+                                                <i className="bi bi-shield-lock-fill fs-2"></i>
+                                            </div>
+                                            <h3 className="fw-bold">Confirm Your Booking</h3>
+                                            <p className="text-muted small">We've sent a 6-digit verification code to your registered email to secure this appointment.</p>
+                                        </div>
+
+                                        {error && <div className="alert alert-danger p-2 small border-0 mb-3">{error}</div>}
+
+                                        <div className="mb-4">
+                                            <input 
+                                                type="text" 
+                                                className="form-control-premium text-center fs-2 fw-black tracking-widest"
+                                                placeholder="000000"
+                                                maxLength={6}
+                                                value={otp}
+                                                onChange={(e) => setOtp(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="d-grid gap-2">
+                                            <button 
+                                                className="btn btn-premium btn-premium-primary py-3 fw-bold"
+                                                onClick={handleVerifyOtp}
+                                                disabled={verifying}
+                                            >
+                                                {verifying ? (
+                                                    <span className="spinner-border spinner-border-sm me-2"></span>
+                                                ) : 'Verify & Confirm Appointment'}
+                                            </button>
+                                            <button 
+                                                className="btn btn-link text-muted small"
+                                                onClick={() => setShowOtpModal(false)}
+                                            >
+                                                Change Details
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </Container>
             </div>

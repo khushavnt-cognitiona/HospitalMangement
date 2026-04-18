@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Row, Col, Form, InputGroup, Button, Spinner } from 'react-bootstrap';
-import { FaSearch, FaStethoscope } from 'react-icons/fa';
+import { Container, Row, Col, Form, InputGroup, Spinner } from 'react-bootstrap';
+import { FaSearch, FaStethoscope, FaFilter } from 'react-icons/fa';
 import { useGlobalState } from '../context/GlobalContext';
 import DoctorCard from './DoctorCard';
 
@@ -36,80 +36,84 @@ const DoctorList = () => {
 
   if (loading && doctors.length === 0) {
     return (
-      <div className="text-center py-5">
+      <div className="flex-center py-5 animate-fade-in" style={{ minHeight: '60vh', flexDirection: 'column' }}>
         <Spinner animation="border" variant="primary" />
-        <p className="mt-3 text-muted">Fetching real-time doctor list...</p>
+        <p className="mt-4 fw-semibold text-muted">Curating our medical team...</p>
       </div>
     );
   }
 
   if (error && doctors.length === 0) {
     return (
-      <div className="text-center py-5">
-        <p className="text-danger">{error}</p>
-        <Button variant="outline-primary" onClick={() => window.location.reload()}>Retry</Button>
+      <div className="flex-center py-5 animate-slide-up" style={{ minHeight: '60vh', flexDirection: 'column' }}>
+        <div className="p-4 bg-danger-light text-danger rounded-4 mb-4">
+            <h5 className="mb-0 fw-bold">Unable to load doctors</h5>
+        </div>
+        <p className="text-muted mb-4">{error}</p>
+        <button className="btn btn-premium btn-premium-primary px-5" onClick={() => window.location.reload()}>Retry Connection</button>
       </div>
     );
   }
 
   return (
-    <Container className="py-5">
-      <div className="d-flex justify-content-between align-items-end mb-5 border-bottom pb-4">
-        <div>
-          <span style={{
-            background: 'rgba(13,110,253,0.08)',
-            color: '#1976d2',
-            borderRadius: 20,
-            padding: '5px 14px',
-            fontSize: 12,
-            fontWeight: 700,
-            letterSpacing: 1,
-            textTransform: 'uppercase',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            marginBottom: 10,
-          }}>
-            <FaStethoscope size={11} /> Medical Team
+    <div className="app-container py-5 animate-slide-up">
+      {/* Premium Header Section */}
+      <header className="mb-5">
+        <div className="d-flex align-items-center gap-2 mb-3">
+          <span className="badge bg-primary-light text-primary px-3 py-2 rounded-pill small fw-bold text-uppercase letter-spacing-wide">
+            <FaStethoscope className="me-1" /> Specialist Network
           </span>
-          <h2 style={{ fontWeight: 900, fontSize: 'clamp(22px, 3vw, 34px)', color: '#1a3a6e', margin: 0 }}>
-            Our Available Doctors
-          </h2>
         </div>
-      </div>
+        <h1 className="fw-bold fs-1 mb-2">Consult with Top Doctors</h1>
+        <p className="text-muted fs-5">Access a network of verified medical professionals across multiple specializations.</p>
+      </header>
 
-      <Row className="mb-5 g-3">
-        <Col md={4}>
-          <InputGroup className="shadow-sm rounded-pill border-0 overflow-hidden">
-            <InputGroup.Text className="bg-white border-0 ps-4"><FaSearch className="text-muted" /></InputGroup.Text>
-            <Form.Control
-              placeholder="Search doctors by name or specialty..."
-              className="border-0 py-3"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </InputGroup>
-        </Col>
-        <Col md={3}>
-          <Form.Select 
-            className="shadow-sm rounded-pill border-0 py-3 px-4"
-            value={specialization}
-            onChange={(e) => setSpecialization(e.target.value)}
-          >
-            {specializations.map(s => <option key={s} value={s}>{s}</option>)}
-          </Form.Select>
-        </Col>
-        <Col md={3} className="d-flex align-items-center">
-          <Form.Check 
-            type="switch"
-            id="available-switch"
-            label="Show only available"
-            className="fw-bold text-muted custom-switch"
-            checked={onlyAvailable}
-            onChange={(e) => setOnlyAvailable(e.target.checked)}
-          />
-        </Col>
-      </Row>
+      {/* Filter & Search Bar */}
+      <div className="premium-card p-4 mb-5 shadow-sm border-0">
+        <Row className="g-3 align-items-center">
+            <Col lg={4}>
+                <div className="position-relative">
+                    <span className="position-absolute translate-middle-y top-50 start-0 ps-3 text-muted">
+                        <FaSearch size={14} />
+                    </span>
+                    <input
+                        type="text"
+                        placeholder="Search by name or specialty..."
+                        className="form-control-premium ps-5"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </Col>
+            <Col lg={3}>
+                <div className="position-relative">
+                    <span className="position-absolute translate-middle-y top-50 start-0 ps-3 text-muted">
+                        <FaFilter size={14} />
+                    </span>
+                    <select 
+                        className="form-control-premium ps-5"
+                        value={specialization}
+                        onChange={(e) => setSpecialization(e.target.value)}
+                    >
+                        {specializations.map(s => <option key={s} value={s}>{s === 'All' ? 'All Specializations' : s}</option>)}
+                    </select>
+                </div>
+            </Col>
+            <Col lg={3} className="px-lg-4">
+                <Form.Check 
+                    type="switch"
+                    id="available-switch"
+                    label="Only Available Now"
+                    className="fw-semibold text-dark fs-6"
+                    checked={onlyAvailable}
+                    onChange={(e) => setOnlyAvailable(e.target.checked)}
+                />
+            </Col>
+            <Col lg={2} className="text-lg-end">
+                <span className="text-muted small fw-bold">{filteredDoctors.length} Results Found</span>
+            </Col>
+        </Row>
+      </div>
 
       <Row className="g-4">
         {filteredDoctors.map((doc) => (
@@ -119,11 +123,16 @@ const DoctorList = () => {
         ))}
         {filteredDoctors.length === 0 && (
           <Col xs={12} className="text-center py-5">
-            <h4 className="text-muted">No doctors found matching your criteria.</h4>
+            <div className="bg-light p-5 rounded-5">
+                <FaSearch size={48} className="text-muted mb-3 opacity-25" />
+                <h3 className="fw-bold text-dark">No Doctors Found</h3>
+                <p className="text-muted">Try adjusting your search terms or filters.</p>
+                <button className="btn btn-premium btn-premium-outline mt-3" onClick={() => {setSearchTerm(''); setSpecialization('All');}}>Reset Filters</button>
+            </div>
           </Col>
         )}
       </Row>
-    </Container>
+    </div>
   );
 };
 

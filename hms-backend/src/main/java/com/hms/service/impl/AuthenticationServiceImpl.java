@@ -4,6 +4,7 @@ import com.hms.security.JwtService;
 import com.hms.dto.AuthenticationRequest;
 import com.hms.dto.AuthenticationResponse;
 import com.hms.dto.RegisterRequest;
+import com.hms.dto.OtpVerificationRequest;
 import com.hms.entity.*;
 import com.hms.repository.*;
 import com.hms.service.AuthenticationService;
@@ -23,9 +24,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final com.hms.service.OtpService otpService;
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
+        // ... existing registration code (keep it as is)
         var user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
@@ -80,6 +83,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         var user = repository.findByUsername(request.getUsername())
                 .orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getName())
+                .role(user.getRole())
+                .build();
+    }
+
+    @Override
+    public void sendOtp(String target) {
+        otpService.generateOtp(target);
+    }
+
+    @Override
+    public AuthenticationResponse verifyOtp(com.hms.dto.OtpVerificationRequest request) {
+        if (!otpService.verifyOtp(request.getTarget(), request.getOtp())) {
+            throw new RuntimeException("Invalid or expired OTP");
+        }
+
+        // Find user by email or phone
+        var user = repository.findByEmail(request.getTarget())
+                .orElseGet(() -> repository.findByPhone(request.getTarget())
+                        .orElseThrow(() -> new RuntimeException("User not found")));
+
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
