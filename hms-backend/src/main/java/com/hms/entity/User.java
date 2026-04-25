@@ -46,6 +46,10 @@ public class User implements UserDetails {
     @Column(columnDefinition = "TEXT")
     private String knownAllergies;
 
+    private String bio;
+    private Double weight;
+    private Double height;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

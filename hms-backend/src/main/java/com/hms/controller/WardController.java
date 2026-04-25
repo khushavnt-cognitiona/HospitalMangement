@@ -22,19 +22,19 @@ public class WardController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Ward> createWard(@RequestBody Ward ward) {
         return ResponseEntity.ok(service.createWard(ward));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Ward> updateWard(@PathVariable("id") Long id, @RequestBody Ward ward) {
         return ResponseEntity.ok(service.updateWard(id, ward));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteWard(@PathVariable("id") Long id) {
         service.deleteWard(id);
         return ResponseEntity.ok().build();
@@ -46,13 +46,13 @@ public class WardController {
     }
 
     @PatchMapping("/beds/{bedId}/status")
-    @PreAuthorize("hasRole('NURSE') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_NURSE') or hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<com.hms.entity.Bed> updateBedStatus(@PathVariable("bedId") Long bedId, @RequestParam("occupied") boolean occupied) {
         return ResponseEntity.ok(service.updateBedStatus(bedId, occupied));
     }
 
     @PostMapping("/beds/{bedId}/allocate")
-    @PreAuthorize("hasRole('NURSE') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_NURSE') or hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<com.hms.entity.Bed> allocateBed(@PathVariable("bedId") Long bedId, @RequestParam("patientId") Long patientId) {
         return ResponseEntity.ok(service.allocateBed(bedId, patientId));
     }

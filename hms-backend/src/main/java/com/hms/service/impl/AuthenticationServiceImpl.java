@@ -96,9 +96,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void sendOtp(OtpRequest request) {
-        if (request.getTarget() == null || request.getTarget().isEmpty()) {
-            throw new RuntimeException("OTP target (email/phone) is required");
+        if (request == null || request.getTarget() == null || request.getTarget().trim().isEmpty()) {
+            throw new RuntimeException("OTP delivery target (email/phone) is required");
         }
+        
+        // Detailed validation if it is an email
+        if (request.getTarget().contains("@") && !request.getTarget().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new RuntimeException("Invalid email format for OTP delivery");
+        }
+
         otpService.generateOtp(request.getTarget());
     }
 

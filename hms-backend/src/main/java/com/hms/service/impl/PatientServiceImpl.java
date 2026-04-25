@@ -33,11 +33,29 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient updatePatient(Long id, Patient patientDetails) {
         Patient patient = repository.findById(id).orElseThrow();
+        User user = patient.getUser();
+        
+        // Update Patient specific clinical fields
         patient.setAge(patientDetails.getAge());
         patient.setGender(patientDetails.getGender());
         patient.setContact(patientDetails.getContact());
         patient.setMedicalHistory(patientDetails.getMedicalHistory());
-        patient.setProfile(patientDetails.getProfile());
+        
+        // Update associated User profile fields if provided in 'profile' or other fields
+        // Note: The frontend sends a fat object, so we map the clinical demographics here
+        if (user != null) {
+            user.setName(patientDetails.getUser().getName());
+            user.setEmail(patientDetails.getUser().getEmail());
+            user.setPhone(patientDetails.getContact()); // Sync contact with phone
+            user.setAddress(patientDetails.getUser().getAddress());
+            user.setWeight(patientDetails.getUser().getWeight());
+            user.setHeight(patientDetails.getUser().getHeight());
+            user.setBio(patientDetails.getUser().getBio());
+            user.setBloodGroup(patientDetails.getUser().getBloodGroup());
+            user.setDateOfBirth(patientDetails.getUser().getDateOfBirth());
+            user.setProfileImage(patientDetails.getUser().getProfileImage());
+        }
+        
         return repository.save(patient);
     }
 }
