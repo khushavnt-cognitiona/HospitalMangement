@@ -35,9 +35,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers(org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher(org.springframework.http.HttpMethod.GET, "/api/v1/doctors/**")).permitAll()
-                        .requestMatchers(org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher(org.springframework.http.HttpMethod.GET, "/api/v1/appointments/slots")).permitAll()
-                        .requestMatchers(org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher(org.springframework.http.HttpMethod.OPTIONS, "/**")).permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/doctors/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/appointments/slots").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

@@ -16,7 +16,7 @@ public class MedicalRecordController {
     private final MedicalRecordService service;
 
     @GetMapping("/patient/{patientId}")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_PATIENT') or hasAuthority('ROLE_DOCTOR') or hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<MedicalRecord>> getPatientRecords(@PathVariable("patientId") Long patientId) {
         return ResponseEntity.ok(service.getRecordsByPatient(patientId));
     }

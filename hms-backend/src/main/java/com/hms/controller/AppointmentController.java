@@ -35,7 +35,7 @@ public class AppointmentController {
     private final com.hms.repository.UserRepository userRepository;
 
     @PostMapping("/book")
-    @PreAuthorize("hasRole('PATIENT')")
+    @PreAuthorize("hasAuthority('ROLE_PATIENT')")
     public ResponseEntity<?> bookAppointment(
             @Valid @RequestBody BookingRequest request,
             org.springframework.security.core.Authentication authentication
@@ -74,7 +74,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/patient/{patientId}")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_PATIENT') or hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Appointment>> getPatientAppointments(@PathVariable("patientId") Long patientId) {
         Patient patient = patientService.getPatientById(patientId).orElseThrow();
         return ResponseEntity.ok(service.getAppointmentsByPatient(patient));
