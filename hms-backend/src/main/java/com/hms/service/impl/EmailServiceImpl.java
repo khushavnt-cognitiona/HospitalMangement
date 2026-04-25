@@ -23,9 +23,9 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             System.err.println("CRITICAL: EMAIL DELIVERY FAILED to " + to);
             System.err.println("REASON: " + e.getMessage());
-            // We NO LONGER throw a RuntimeException here.
-            // This prevents a 500 error on the frontend and allows 
-            // the user to check the console/logs for the OTP if SMTP fails.
+            e.printStackTrace();
+            // We DO NOT throw a RuntimeException here to avoid 500 errors.
+            // OTP can still be recovered from backend logs if needed for internal testing.
         }
     }
 }

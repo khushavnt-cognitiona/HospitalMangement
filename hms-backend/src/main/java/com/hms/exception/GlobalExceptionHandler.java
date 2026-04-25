@@ -19,7 +19,8 @@ public class GlobalExceptionHandler {
         e.printStackTrace(); // Output full stack trace to backend logs
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
-        response.put("message", e.getMessage());
+        response.put("message", e.getMessage() != null ? e.getMessage() : "An internal server error occurred");
+        response.put("errorType", e.getClass().getSimpleName());
         response.put("status", 500);
         return ResponseEntity.internalServerError().body(response);
     }

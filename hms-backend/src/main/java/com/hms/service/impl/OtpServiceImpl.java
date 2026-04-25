@@ -43,10 +43,14 @@ public class OtpServiceImpl implements OtpService {
         System.out.println("========================================");
 
         // Send via email (Mock phone for now)
-        if (target.contains("@")) {
-            emailService.sendOtpEmail(target, otp);
-        } else {
-            System.out.println("DEBUG: SMS OTP for " + target + " is " + otp);
+        try {
+            if (target != null && target.contains("@")) {
+                emailService.sendOtpEmail(target, otp);
+            } else {
+                System.out.println("DEBUG: SMS path selected but not implemented for " + target);
+            }
+        } catch (Exception e) {
+            System.err.println("ALERT: Non-fatal OTP delivery error: " + e.getMessage());
         }
 
         return otp;
