@@ -16,11 +16,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(Exception e) {
-        e.printStackTrace(); // Output full stack trace to backend logs
+        e.printStackTrace(); 
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
-        response.put("message", e.getMessage() != null ? e.getMessage() : "An internal server error occurred");
+        response.put("message", e.getMessage() != null ? e.getMessage() : "Unknown Error");
         response.put("errorType", e.getClass().getSimpleName());
+        
+        // Temporarily include stack trace snippet for easy remote debugging
+        java.io.StringWriter sw = new java.io.StringWriter();
+        e.printStackTrace(new java.io.PrintWriter(sw));
+        String fullStackTrace = sw.toString();
+        response.put("stackTrace", fullStackTrace.length() > 500 ? fullStackTrace.substring(0, 500) : fullStackTrace);
+        
         response.put("status", 500);
         return ResponseEntity.internalServerError().body(response);
     }

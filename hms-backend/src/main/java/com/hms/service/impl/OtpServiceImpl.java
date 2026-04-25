@@ -21,11 +21,8 @@ public class OtpServiceImpl implements OtpService {
     @Override
     @Transactional
     public String generateOtp(String target) {
-        // Clear any previous OTPs for this target
-        otpRepository.deleteByTarget(target);
-
-        // Generate 6-digit OTP
-        String otp = String.format("%06d", new Random().nextInt(1000000));
+        // Generate 6-digit OTP using SecureRandom for security
+        String otp = String.format("%06d", new java.security.SecureRandom().nextInt(1000000));
 
         OtpEntity otpEntity = OtpEntity.builder()
                 .target(target)
@@ -36,11 +33,7 @@ public class OtpServiceImpl implements OtpService {
 
         otpRepository.save(otpEntity);
         
-        // FORCE LOG OTP FOR CLOUD DEBUGGING
-        System.out.println("========================================");
-        System.out.println("OTP GENERATED FOR: " + target);
-        System.out.println("CODE: " + otp);
-        System.out.println("========================================");
+        System.out.println("LOG: New OTP record saved for: " + target);
 
         // Send via email (Mock phone for now)
         try {
@@ -59,11 +52,14 @@ public class OtpServiceImpl implements OtpService {
     @Override
     @Transactional
     public boolean verifyOtp(String target, String otp) {
-        return otpRepository.findByTargetAndOtpAndIsUsedFalse(target, otp)
-                .map(otpEntity -> {
-                    if (otpEntity.getExpiryTime().isAfter(LocalDateTime.now())) {
-                        otpEntity.setUsed(true);
-                        otpRepository.save(otpEntity);
+        return otpRepository.findAllByTargetAndIsUsedFalseOrderByExpiryTimeDesc(target)
+                .stream()
+                .filter(entity -> entity.getOtp().equals(otp))
+                .findFirst()
+                .map(entity -> {
+                    if (entity.getExpiryTime().isAfter(LocalDateTime.now())) {
+                        entity.setUsed(true);
+                        otpRepository.save(entity);
                         return true;
                     }
                     return false;
