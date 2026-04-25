@@ -96,16 +96,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void sendOtp(OtpRequest request) {
-        if (request == null || request.getTarget() == null || request.getTarget().trim().isEmpty()) {
-            throw new RuntimeException("OTP delivery target (email/phone) is required");
-        }
-        
-        // Detailed validation if it is an email
-        if (request.getTarget().contains("@") && !request.getTarget().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            throw new RuntimeException("Invalid email format for OTP delivery");
-        }
+        try {
+            if (request == null || request.getTarget() == null || request.getTarget().trim().isEmpty()) {
+                throw new RuntimeException("OTP target is missing in request body");
+            }
+            
+            String target = request.getTarget().trim();
+            System.out.println("DEBUG: Attempting to send OTP to: " + target);
 
-        otpService.generateOtp(request.getTarget());
+            // Trigger OTP generation (includes DB save and email send attempt)
+            otpService.generateOtp(target);
+            
+            System.out.println("DEBUG: OTP generation process triggered for: " + target);
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR IN sendOtp: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Internal Error during OTP send: " + e.getMessage());
+        }
     }
 
     @Override

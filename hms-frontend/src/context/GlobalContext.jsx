@@ -66,8 +66,8 @@ export const GlobalProvider = ({ children }) => {
         }
     }
 
-    // Fetch Appointments
-    if (!failedServices.current.has('appointments') && localStorage.getItem('hms_token')) {
+    // Fetch Appointments - Only if authenticated (using 'token' key)
+    if (!failedServices.current.has('appointments') && localStorage.getItem('token')) {
         try {
             const apps = await appointmentService.getAllAppointments();
             dispatch({ type: 'SET_APPOINTMENTS', payload: apps || [] });
@@ -76,8 +76,8 @@ export const GlobalProvider = ({ children }) => {
         }
     }
 
-    // Fetch Wards
-    if (!failedServices.current.has('wards')) {
+    // Fetch Wards - Only if authenticated
+    if (!failedServices.current.has('wards') && localStorage.getItem('token')) {
         try {
             const wards = await wardService.getAllWards();
             dispatch({ type: 'SET_WARDS', payload: wards || [] });
