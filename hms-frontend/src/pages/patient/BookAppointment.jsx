@@ -62,8 +62,9 @@ const BookAppointment = () => {
     };
 
     const handleSlotClick = (slot) => {
-        const slotTime = slot.time || slot.startTime?.substring(0, 5);
-        setForm({ ...form, timeId: slot.id, time: slotTime });
+        const slotTime = typeof slot === 'string' ? slot : (slot.time || slot.startTime?.substring(0, 5));
+        const slotId = typeof slot === 'string' ? slot : slot.id;
+        setForm({ ...form, timeId: slotId, time: slotTime });
     };
 
     const handleSubmit = async (e) => {

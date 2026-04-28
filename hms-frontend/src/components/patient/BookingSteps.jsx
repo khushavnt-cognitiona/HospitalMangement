@@ -105,24 +105,28 @@ const BookingSteps = ({
                                         </div>
                                     ) : (
                                         <div className="slots-grid">
-                                            {availableSlots.length > 0 ? availableSlots.map(slot => {
-                                                const slotTime = slot.time || slot.startTime?.substring(0, 5);
-                                                const isSelected = form.timeId === slot.id;
-                                                return (
-                                                    <div 
-                                                        key={slot.id} 
-                                                        className={`slot-chip ${isSelected ? 'selected' : ''} ${slot.isBooked ? 'disabled' : ''}`}
-                                                        onClick={() => !slot.isBooked && handleSlotClick(slot)}
-                                                    >
-                                                        <span>{slotTime}</span>
-                                                        {slot.isBooked && <FaLock size={10} className="ms-1" />}
+                                            {(() => {
+                                                const slots = selectedDoctor?.availabilitySlots
+                                                    ? selectedDoctor.availabilitySlots.split(",")
+                                                    : [];
+                                                
+                                                return slots.length > 0 ? slots.map((slot, index) => {
+                                                    const isSelected = form.time === slot;
+                                                    return (
+                                                        <button 
+                                                            key={index} 
+                                                            className={`slot-btn slot-chip ${isSelected ? 'selected' : ''}`}
+                                                            onClick={() => handleSlotClick(slot)}
+                                                        >
+                                                            {slot}
+                                                        </button>
+                                                    );
+                                                }) : (
+                                                    <div className="w-100 text-center py-5 border border-dashed rounded-4">
+                                                        <p className="text-muted mb-0 small fw-bold">No slots available for this date.</p>
                                                     </div>
                                                 );
-                                            }) : (
-                                                <div className="w-100 text-center py-5 border border-dashed rounded-4">
-                                                    <p className="text-muted mb-0 small fw-bold">No slots available for this date.</p>
-                                                </div>
-                                            )}
+                                            })()}
                                         </div>
                                     )}
                                 </div>
