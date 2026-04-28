@@ -44,7 +44,14 @@ public class OtpServiceImpl implements OtpService {
 
         // Send via email (Mock phone for now)
         if (target.contains("@")) {
-            emailService.sendOtpEmail(target, otp);
+            try {
+                emailService.sendOtpEmail(target, otp);
+                System.out.println("SUCCESS: OTP Email sent to " + target);
+            } catch (Exception e) {
+                System.err.println("WARNING: Failed to send OTP email to " + target + ". Reason: " + e.getMessage());
+                // Fallback mechanism: Email failed, but OTP is securely saved in DB and logged above.
+                // We deliberately do not throw an exception here to prevent returning a 500 Internal Server Error.
+            }
         } else {
             System.out.println("DEBUG: SMS OTP for " + target + " is " + otp);
         }
