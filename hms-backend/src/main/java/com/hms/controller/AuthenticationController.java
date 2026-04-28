@@ -38,8 +38,10 @@ public class AuthenticationController {
     public ResponseEntity<?> sendOtp(@RequestBody OtpRequest request) {
         try {
             service.sendOtp(request);
-            return ResponseEntity.ok("OTP generated successfully");
-        } catch (Exception e) {
+            // Never reveal OTP in response — only confirm it was sent
+            return ResponseEntity.ok("OTP sent to your email");
+        } catch (RuntimeException e) {
+            // Return user-facing error (e.g., "No account found") but not stack traces
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

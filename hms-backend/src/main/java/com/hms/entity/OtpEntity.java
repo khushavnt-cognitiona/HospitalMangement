@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "otps")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,8 +24,15 @@ public class OtpEntity {
     private String otp;
 
     @Column(nullable = false)
-    private java.time.LocalDateTime expiryTime;
+    private LocalDateTime expiryTime;
 
+    // Use explicit boolean (not primitive) to avoid Lombok isUsed/getUsed ambiguity
     @Builder.Default
-    private boolean isUsed = false;
+    @Column(name = "is_used", nullable = false)
+    private Boolean isUsed = false;
+
+    // Track failed verification attempts to enforce max-attempts security
+    @Builder.Default
+    @Column(name = "attempt_count", nullable = false)
+    private Integer attemptCount = 0;
 }

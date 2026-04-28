@@ -99,36 +99,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (request == null || request.getTarget() == null || request.getTarget().trim().isEmpty()) {
             throw new RuntimeException("Email is required");
         }
-        
-        String target = request.getTarget().trim();
-        System.out.println("DEBUG: Attempting to send OTP to: " + target);
 
-        // Pre-validation: Ensure user exists
+        String target = request.getTarget().trim();
+
+        // Pre-validation: Ensure user exists before generating OTP
         repository.findByEmail(target)
                 .orElseGet(() -> repository.findByPhone(target)
                         .orElseThrow(() -> new RuntimeException("No account found with this email/mobile")));
 
-        try {
-            // Trigger OTP generation (includes DB save and email send attempt)
-            otpService.generateOtp(target);
-            
-            System.out.println("DEBUG: OTP generation process triggered for: " + target);
-        } catch (Exception e) {
-            System.err.println("CRITICAL ERROR IN sendOtp: " + e.getMessage());
-            e.printStackTrace();
-            System.out.println("Email failed but OTP generated");
-        }
+        // Generate OTP and send via email — OTP is NEVER returned or logged here
+        otpService.generateOtp(target);
     }
 
     @Override
     public AuthenticationResponse verifyOtp(OtpVerificationRequest request) {
-        if (!otpService.verifyOtp(request.getTarget(), request.getOtp())) {
-            throw new RuntimeException("Invalid or expired OTP");
+        if (request.getTarget() == null || request.getOtp() == null
+                || request.getOtp().trim().length() != 6) {
+            throw new RuntimeException("Invalid OTP format");
+        }
+
+        if (!otpService.verifyOtp(request.getTarget().trim(), request.getOtp().trim())) {
+            throw new RuntimeException("Invalid or expired OTP. Please request a new code.");
         }
 
         // Find user by email or phone
-        var user = repository.findByEmail(request.getTarget())
-                .orElseGet(() -> repository.findByPhone(request.getTarget())
+        var user = repository.findByEmail(request.getTarget().trim())
+                .orElseGet(() -> repository.findByPhone(request.getTarget().trim())
                         .orElseThrow(() -> new RuntimeException("User not found")));
 
         var jwtToken = jwtService.generateToken(user);

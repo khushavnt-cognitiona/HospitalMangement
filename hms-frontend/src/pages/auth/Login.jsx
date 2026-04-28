@@ -156,18 +156,21 @@ const Login = () => {
 
                                 {otpSent && (
                                     <div className="form-group-premium mb-5 animate-slide-up">
-                                        <div className="alert alert-success border-0 rounded-4 p-3 small d-flex align-items-center gap-2 mb-4">
-                                            <span className="fs-5">✔️</span> OTP sent successfully to {maskTarget(target)}
+                                        <div className="alert alert-info border-0 rounded-4 p-3 small d-flex align-items-center gap-2 mb-4">
+                                            <span className="fs-5">📧</span>
+                                            We have sent a 6-digit code to your email ({maskTarget(target)})
                                         </div>
                                         <label className="form-label-premium text-primary">Enter 6-digit OTP</label>
                                         <input
                                             type="text"
                                             className="form-control-premium text-center fs-3 fw-bold tracking-widest"
-                                            placeholder="000000"
+                                            placeholder="● ● ● ● ● ●"
                                             maxLength={6}
                                             value={otp}
-                                            onChange={(e) => setOtp(e.target.value)}
+                                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                             required
+                                            autoComplete="one-time-code"
+                                            inputMode="numeric"
                                         />
                                         <p className="small text-muted mt-2 text-center">
                                             Didn't receive code? <button type="button" className="btn btn-link small p-0 fw-bold" onClick={handleSendOtp}>Resend</button>
