@@ -96,14 +96,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void sendOtp(OtpRequest request) {
-        try {
-            if (request == null || request.getTarget() == null || request.getTarget().trim().isEmpty()) {
-                throw new RuntimeException("OTP target is missing in request body");
-            }
-            
-            String target = request.getTarget().trim();
-            System.out.println("DEBUG: Attempting to send OTP to: " + target);
+        if (request == null || request.getTarget() == null || request.getTarget().trim().isEmpty()) {
+            throw new RuntimeException("OTP target is missing in request body");
+        }
+        
+        String target = request.getTarget().trim();
+        System.out.println("DEBUG: Attempting to send OTP to: " + target);
 
+        // Pre-validation: Ensure user exists
+        repository.findByEmail(target)
+                .orElseGet(() -> repository.findByPhone(target)
+                        .orElseThrow(() -> new RuntimeException("No account found with this email/mobile")));
+
+        try {
             // Trigger OTP generation (includes DB save and email send attempt)
             otpService.generateOtp(target);
             

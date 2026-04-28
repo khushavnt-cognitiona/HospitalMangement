@@ -15,13 +15,26 @@ const Login = () => {
     const { login, loginWithOtp } = useAuth();
     const navigate = useNavigate();
 
+    const maskTarget = (val) => {
+        if (!val) return "";
+        if (val.includes("@")) {
+            const [local, domain] = val.split("@");
+            if (local.length <= 2) return val;
+            return `${local.substring(0, 2)}****@${domain}`;
+        }
+        if (val.length >= 10) {
+            return `******${val.substring(val.length - 4)}`;
+        }
+        return val;
+    };
+
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
     const handleSendOtp = async () => {
-        if (!target) {
-            setError("Please enter email or phone number");
+        if (!target || target.trim() === "") {
+            setError("Please enter a valid email or phone number");
             return;
         }
         setLoading(true);
@@ -30,7 +43,7 @@ const Login = () => {
             await authService.sendOtp(target);
             setOtpSent(true);
         } catch (err) {
-            setError("Failed to send OTP. Please check your contact detail.");
+            setError(err.response?.data?.message || "Failed to send OTP. Please check your contact detail.");
         } finally {
             setLoading(false);
         }
@@ -143,6 +156,9 @@ const Login = () => {
 
                                 {otpSent && (
                                     <div className="form-group-premium mb-5 animate-slide-up">
+                                        <div className="alert alert-success border-0 rounded-4 p-3 small d-flex align-items-center gap-2 mb-4">
+                                            <span className="fs-5">✔️</span> OTP sent successfully to {maskTarget(target)}
+                                        </div>
                                         <label className="form-label-premium text-primary">Enter 6-digit OTP</label>
                                         <input
                                             type="text"
