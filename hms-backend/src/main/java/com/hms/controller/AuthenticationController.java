@@ -37,7 +37,7 @@ public class AuthenticationController {
     @PostMapping("/send-otp")
     public ResponseEntity<String> sendOtp(@RequestBody OtpRequest request) {
         service.sendOtp(request);
-        return ResponseEntity.ok("OTP sent successfully");
+        return ResponseEntity.ok("OTP generated successfully");
     }
 
     @PostMapping("/verify-otp")

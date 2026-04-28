@@ -97,7 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void sendOtp(OtpRequest request) {
         if (request == null || request.getTarget() == null || request.getTarget().trim().isEmpty()) {
-            throw new RuntimeException("OTP target is missing in request body");
+            throw new RuntimeException("Email is required");
         }
         
         String target = request.getTarget().trim();
