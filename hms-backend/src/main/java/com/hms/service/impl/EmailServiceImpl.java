@@ -2,6 +2,7 @@ package com.hms.service.impl;
 
 import com.hms.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,20 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
 
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
     @Override
     public void sendOtpEmail(String to, String otp) {
-        // OTP value is NEVER logged here for security
+        System.out.println("========================================");
+        System.out.println("[EMAIL] Attempting to send OTP email");
+        System.out.println("[EMAIL] From    : " + fromEmail);
+        System.out.println("[EMAIL] To      : " + to);
+        System.out.println("[EMAIL] OTP len : " + (otp != null ? otp.length() : "null") + " digits");
+        System.out.println("========================================");
+
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
         message.setTo(to);
         message.setSubject("Your Verification Code – HMSPro");
         message.setText(
@@ -28,11 +39,17 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             mailSender.send(message);
-            System.out.println("INFO: OTP email dispatched successfully to " + to);
+            System.out.println("[EMAIL] SUCCESS - OTP email sent to: " + to);
         } catch (Exception e) {
-            // Do NOT crash the API — caller handles the fallback
-            System.err.println("ERROR: Could not send OTP email to " + to + " | " + e.getMessage());
-            throw e; // re-throw so OtpServiceImpl can log & swallow it cleanly
+            System.err.println("[EMAIL] FAILED - Could not send to: " + to);
+            System.err.println("[EMAIL] Error type   : " + e.getClass().getSimpleName());
+            System.err.println("[EMAIL] Error message: " + e.getMessage());
+            if (e.getCause() != null) {
+                System.err.println("[EMAIL] Root cause  : " + e.getCause().getMessage());
+            }
+            e.printStackTrace();
+            // Re-throw so OtpServiceImpl logs it but does NOT crash the API
+            throw new RuntimeException("Email delivery failed: " + e.getMessage(), e);
         }
     }
 }
