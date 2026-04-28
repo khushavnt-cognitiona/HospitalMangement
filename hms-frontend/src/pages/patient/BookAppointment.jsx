@@ -3,6 +3,7 @@ import { Container, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import doctorService from '../../services/doctorService';
 import appointmentService from '../../services/appointmentService';
+import axiosInstance from '../../api/axiosInstance';
 import PatientLayout from '../../components/patient/PatientLayout';
 import BookingSteps from '../../components/patient/BookingSteps';
 import AppointmentPass from '../../components/patient/AppointmentPass';
@@ -14,6 +15,29 @@ const BookAppointment = () => {
     const [doctors, setDoctors] = useState([]);
     const [availableSlots, setAvailableSlots] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchDoctors();
+    }, []);
+
+    const fetchDoctors = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            console.log("Fetching doctors...");
+            const res = await axiosInstance.get("/doctors");
+            console.log(res.data);
+            setDoctors(res.data);
+        } catch (err) {
+            console.error("Error:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
     const [loadingSlots, setLoadingSlots] = useState(false);
     const [error, setError] = useState('');
     const [submitted, setSubmitted] = useState(false);
