@@ -1,8 +1,8 @@
-import api from "../api/axiosInstance";
+import axiosInstance from "../api/axiosInstance";
 
 const register = async (userData) => {
   try {
-    const response = await api.post("auth/register", userData);
+    const response = await axiosInstance.post("auth/register", userData);
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
@@ -16,7 +16,7 @@ const register = async (userData) => {
 
 const login = async (credentials) => {
   try {
-    const response = await api.post("auth/authenticate", credentials);
+    const response = await axiosInstance.post("auth/authenticate", credentials);
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
@@ -30,7 +30,7 @@ const login = async (credentials) => {
 
 const sendOtp = async (target) => {
   try {
-    const response = await api.post("auth/send-otp", { target });
+    const response = await axiosInstance.post("auth/send-otp", { target });
     return response.data;
   } catch (error) {
     console.error("OTP send error:", error);
@@ -40,7 +40,7 @@ const sendOtp = async (target) => {
 
 const verifyOtp = async (verificationData) => {
   try {
-    const response = await api.post("auth/verify-otp", verificationData);
+    const response = await axiosInstance.post("auth/verify-otp", verificationData);
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));

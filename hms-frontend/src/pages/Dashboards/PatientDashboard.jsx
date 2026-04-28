@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axiosInstance from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 
 const PatientDashboard = () => {
@@ -15,14 +15,14 @@ const PatientDashboard = () => {
 
     const fetchDoctors = async () => {
         try {
-            const response = await api.get('/doctors');
+            const response = await axiosInstance.get('/doctors');
             setDoctors(response.data);
         } catch (err) { console.error(err); }
     };
 
     const fetchMyAppointments = async () => {
         try {
-            const response = await api.get('/appointments/patient/4'); // Assuming Patient ID 4
+            const response = await axiosInstance.get('/appointments/patient/4'); // Assuming Patient ID 4
             setAppointments(response.data);
         } catch (err) { console.error(err); }
     };
@@ -30,7 +30,7 @@ const PatientDashboard = () => {
     const handleBook = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/appointments/book', {
+            await axiosInstance.post('/appointments/book', {
                 doctorId: booking.doctorId,
                 patientId: 4, // Patient ID 4
                 slotTime: booking.slotTime

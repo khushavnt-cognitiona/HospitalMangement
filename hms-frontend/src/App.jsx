@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import { GlobalProvider } from "./context/GlobalContext";
+// Context providers moved to main.jsx
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
@@ -47,9 +46,7 @@ const Layout = ({ children }) => {
 
 const App = () => {
   return (
-    <GlobalProvider>
-      <AuthProvider>
-        <Router>
+    <Router>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Layout><LandingPage /></Layout>} />
@@ -92,9 +89,7 @@ const App = () => {
             {/* Default Route */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </Router>
-      </AuthProvider>
-    </GlobalProvider>
+    </Router>
   );
 };
 

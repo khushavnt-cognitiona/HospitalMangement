@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axiosInstance from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 
 const NurseDashboard = () => {
@@ -14,14 +14,14 @@ const NurseDashboard = () => {
 
     const fetchWards = async () => {
         try {
-            const response = await api.get('/wards');
+            const response = await axiosInstance.get('/wards');
             setWards(response.data);
         } catch (err) { console.error(err); }
     };
 
     const fetchNotifications = async () => {
         try {
-            const response = await api.get('/notifications');
+            const response = await axiosInstance.get('/notifications');
             setNotifications(response.data);
         } catch (err) { console.error(err); }
     };

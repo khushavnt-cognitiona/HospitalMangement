@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axiosInstance from '../../api/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 
 const DoctorDashboard = () => {
@@ -16,7 +16,7 @@ const DoctorDashboard = () => {
         try {
             // In a real app, you'd fetch by doctor ID
             // For now, let's fetch all and filter or use a specific endpoint
-            const response = await api.get('/appointments/doctor/2'); // Assuming Dr. Smith is ID 2
+            const response = await axiosInstance.get('/appointments/doctor/2'); // Assuming Dr. Smith is ID 2
             setAppointments(response.data);
         } catch (err) { console.error(err); }
     };
@@ -24,7 +24,7 @@ const DoctorDashboard = () => {
     const handlePrescribe = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/prescriptions', {
+            await axiosInstance.post('/prescriptions', {
                 appointmentId: activeAppt.id,
                 ...prescription
             });

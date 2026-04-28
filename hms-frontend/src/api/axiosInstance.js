@@ -1,17 +1,22 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://hospitalmangement-14.onrender.com/api/v1/";
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
+const axiosInstance = axios.create({
+  baseURL: "https://hospitalmangement-14.onrender.com/api/v1",
   headers: {
     "Content-Type": "application/json"
   }
 });
 
-api.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
+    
+    // PREVENT API CALL BEFORE LOGIN
+    // Abort request if no token, except for auth routes (login/register)
+    if (!token && !config.url.includes("auth")) {
+        return Promise.reject(new axios.Cancel("Request cancelled: No token provided"));
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,7 +27,7 @@ api.interceptors.request.use(
   }
 );
 
-api.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
@@ -37,12 +42,10 @@ api.interceptors.response.use(
       }
     } else if (status === 403) {
       console.warn("Access forbidden: You do not have permission to access this resource.");
-      // We don't log out on 403 because the session might still be valid, 
-      // just not for this specific administrative or restricted resource.
     }
 
     return Promise.reject(error);
   }
 );
 
-export default api;
+export default axiosInstance;

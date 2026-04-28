@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import axiosInstance from '../../api/axiosInstance';
 
 const AdminDashboard = () => {
     const [wards, setWards] = useState([]);
@@ -14,14 +14,14 @@ const AdminDashboard = () => {
 
     const fetchWards = async () => {
         try {
-            const response = await api.get('/wards');
+            const response = await axiosInstance.get('/wards');
             setWards(response.data);
         } catch (err) { console.error(err); }
     };
 
     const fetchStaff = async () => {
         try {
-            const response = await api.get('/staff');
+            const response = await axiosInstance.get('/staff');
             setStaff(response.data);
         } catch (err) { console.error(err); }
     };
@@ -29,7 +29,7 @@ const AdminDashboard = () => {
     const handleCreateWard = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/wards', newWard);
+            await axiosInstance.post('/wards', newWard);
             fetchWards();
             setNewWard({ wardNumber: '', type: 'General', capacity: 10 });
         } catch (err) { console.error(err); }

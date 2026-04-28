@@ -10,7 +10,9 @@ import axiosInstance from "../../api/axiosInstance";
 import "../../styles/Navbar.css";
 
 const AppNavbar = () => {
-  const { user, logout } = useAuth();
+  const auth = useAuth();
+  const user = auth?.user;
+  const logout = auth?.logout;
   const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
