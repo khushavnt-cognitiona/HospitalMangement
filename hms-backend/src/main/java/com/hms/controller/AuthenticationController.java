@@ -35,9 +35,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/send-otp")
-    public ResponseEntity<String> sendOtp(@RequestBody OtpRequest request) {
-        service.sendOtp(request);
-        return ResponseEntity.ok("OTP generated successfully");
+    public ResponseEntity<?> sendOtp(@RequestBody OtpRequest request) {
+        try {
+            service.sendOtp(request);
+            return ResponseEntity.ok("OTP generated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/verify-otp")

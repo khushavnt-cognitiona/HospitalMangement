@@ -116,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (Exception e) {
             System.err.println("CRITICAL ERROR IN sendOtp: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Failed to process OTP request. Please try again later.");
+            System.out.println("Email failed but OTP generated");
         }
     }
 

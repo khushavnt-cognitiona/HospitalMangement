@@ -22,9 +22,10 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject("Your HMS OTP Code");
             message.setText("Your OTP code is: " + otp + ". This code is valid for 5 minutes.");
             mailSender.send(message);
+            System.out.println("Email sent successfully");
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Email failed but OTP generated");
+            e.printStackTrace();
         }
     }
 }
