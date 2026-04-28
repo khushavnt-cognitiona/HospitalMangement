@@ -1,12 +1,15 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080/api/v1/";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://hospitalmangement-14.onrender.com/api/v1/";
 
-const axiosInstance = axios.create({
+const api = axios.create({
   baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json"
+  }
 });
 
-axiosInstance.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -19,7 +22,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-axiosInstance.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
@@ -42,4 +45,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default api;

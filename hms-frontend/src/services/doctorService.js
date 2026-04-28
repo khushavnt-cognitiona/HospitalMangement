@@ -1,8 +1,8 @@
-import axiosInstance from "../api/axiosInstance";
+import api from "../api/axiosInstance";
 
 const getAllDoctors = async () => {
   try {
-    const response = await axiosInstance.get("doctors");
+    const response = await api.get("doctors");
     return response.data;
   } catch (error) {
     console.error("Error fetching doctors:", error);
@@ -12,7 +12,7 @@ const getAllDoctors = async () => {
 
 const getDoctorById = async (id) => {
   try {
-    const response = await axiosInstance.get(`doctors/${id}`);
+    const response = await api.get(`doctors/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching doctor with ID ${id}:`, error);
@@ -22,7 +22,7 @@ const getDoctorById = async (id) => {
 
 const updateDoctor = async (id, doctorData) => {
   try {
-    const response = await axiosInstance.put(`doctors/${id}`, doctorData);
+    const response = await api.put(`doctors/${id}`, doctorData);
     return response.data;
   } catch (error) {
     console.error(`Error updating doctor with ID ${id}:`, error);
@@ -32,7 +32,7 @@ const updateDoctor = async (id, doctorData) => {
 
 const getAvailability = async (doctorId, date) => {
   try {
-    const response = await axiosInstance.get(`appointments/slots?doctorId=${doctorId}&date=${date}`);
+    const response = await api.get(`appointments/slots?doctorId=${doctorId}&date=${date}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching doctor availability:", error);

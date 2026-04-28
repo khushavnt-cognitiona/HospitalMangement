@@ -1,8 +1,8 @@
-import axiosInstance from "../api/axiosInstance";
+import api from "../api/axiosInstance";
 
 const getPatientById = async (id) => {
   try {
-    const response = await axiosInstance.get(`patients/${id}`);
+    const response = await api.get(`patients/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching patient with ID ${id}:`, error);
@@ -12,7 +12,7 @@ const getPatientById = async (id) => {
 
 const updatePatient = async (id, patientData) => {
   try {
-    const response = await axiosInstance.put(`patients/${id}`, patientData);
+    const response = await api.put(`patients/${id}`, patientData);
     return response.data;
   } catch (error) {
     console.error(`Error updating patient with ID ${id}:`, error);
@@ -22,7 +22,7 @@ const updatePatient = async (id, patientData) => {
 
 const getPatientByUserId = async (userId) => {
   try {
-    const response = await axiosInstance.get(`patients/user/${userId}`);
+    const response = await api.get(`patients/user/${userId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching patient for user ID ${userId}:`, error);

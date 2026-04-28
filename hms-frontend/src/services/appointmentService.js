@@ -1,8 +1,8 @@
-import axiosInstance from "../api/axiosInstance";
+import api from "../api/axiosInstance";
 
 const bookAppointment = async (bookingData) => {
   try {
-    const response = await axiosInstance.post("appointments/book", bookingData);
+    const response = await api.post("appointments/book", bookingData);
     return response.data;
   } catch (error) {
     console.error("Error booking appointment:", error);
@@ -12,7 +12,7 @@ const bookAppointment = async (bookingData) => {
 
 const getDoctorAppointments = async (doctorId) => {
   try {
-    const response = await axiosInstance.get(`appointments/doctor/${doctorId}`);
+    const response = await api.get(`appointments/doctor/${doctorId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching doctor appointments:", error);
@@ -22,7 +22,7 @@ const getDoctorAppointments = async (doctorId) => {
 
 const getPatientAppointments = async (patientId) => {
   try {
-    const response = await axiosInstance.get(`appointments/patient/${patientId}`);
+    const response = await api.get(`appointments/patient/${patientId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching patient appointments:", error);
@@ -32,7 +32,7 @@ const getPatientAppointments = async (patientId) => {
 
 const updateAppointmentStatus = async (id, status) => {
   try {
-    const response = await axiosInstance.patch(`appointments/${id}/status?status=${status}`);
+    const response = await api.patch(`appointments/${id}/status?status=${status}`);
     return response.data;
   } catch (error) {
     console.error("Error updating appointment status:", error);
@@ -42,7 +42,7 @@ const updateAppointmentStatus = async (id, status) => {
 
 const getAvailableSlots = async (doctorId, date) => {
   try {
-    const response = await axiosInstance.get(`appointments/slots?doctorId=${doctorId}&date=${date}`);
+    const response = await api.get(`appointments/slots?doctorId=${doctorId}&date=${date}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching available slots:", error);
@@ -52,7 +52,7 @@ const getAvailableSlots = async (doctorId, date) => {
 
 const lockSlot = async (slotId, userId) => {
   try {
-    const response = await axiosInstance.post(`appointments/slots/${slotId}/lock?userId=${userId}`);
+    const response = await api.post(`appointments/slots/${slotId}/lock?userId=${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error locking slot:", error);
@@ -62,7 +62,7 @@ const lockSlot = async (slotId, userId) => {
 
 const verifyBookingOtp = async (appointmentId, otp) => {
   try {
-    const response = await axiosInstance.post(`appointments/verify-booking-otp?appointmentId=${appointmentId}&otp=${otp}`);
+    const response = await api.post(`appointments/verify-booking-otp?appointmentId=${appointmentId}&otp=${otp}`);
     return response.data;
   } catch (error) {
     console.error("Error verifying booking OTP:", error);
