@@ -27,11 +27,17 @@ public class OtpServiceImpl implements OtpService {
         // 1. Clear any previous OTPs for this target
         otpRepository.deleteByTarget(target);
 
-        // 2. Generate cryptographically secure 6-digit OTP (never hardcoded, never exposed)
+        // 2. Generate cryptographically secure 6-digit OTP
         int otpInt = 100000 + SECURE_RANDOM.nextInt(900000);
         String otp = String.valueOf(otpInt);
 
-        // 3. Persist OTP with 5-minute expiry
+        // 3. DEBUG LOG — visible in Render logs only, NEVER sent to frontend or API response
+        System.out.println("========================================");
+        System.out.println("[OTP] Generated OTP : " + otp);
+        System.out.println("[OTP] Sending to    : " + target);
+        System.out.println("========================================");
+
+        // 4. Persist OTP with 5-minute expiry
         OtpEntity otpEntity = OtpEntity.builder()
                 .target(target)
                 .otp(otp)
@@ -41,20 +47,21 @@ public class OtpServiceImpl implements OtpService {
                 .build();
 
         otpRepository.save(otpEntity);
+        System.out.println("[OTP] OTP saved to DB successfully for: " + target);
 
-        // 4. Send OTP via email — never log or expose the OTP value
+        // 5. Send OTP via email — never exposed in API response
         if (target.contains("@")) {
             try {
                 emailService.sendOtpEmail(target, otp);
-                System.out.println("INFO: OTP email dispatched to " + target);
+                System.out.println("[OTP] Email sent successfully to: " + target);
             } catch (Exception e) {
-                // Log error but do NOT crash the API — OTP is already saved in DB
-                System.err.println("WARNING: Failed to send OTP email to " + target + ". Reason: " + e.getMessage());
+                // Do NOT crash the API — OTP is already saved in DB, user can still enter it manually
+                System.err.println("[OTP] Email FAILED for: " + target + " | Reason: " + e.getMessage());
+                System.out.println("[OTP] OTP is still valid in DB — check Render logs for the code above");
             }
         } else {
-            System.out.println("INFO: SMS channel not configured — OTP stored in DB for target " + target);
+            System.out.println("[OTP] Non-email target — SMS not configured for: " + target);
         }
-        // OTP value is NEVER returned or logged here
     }
 
     @Override
@@ -64,6 +71,7 @@ public class OtpServiceImpl implements OtpService {
                 .map(otpEntity -> {
                     // Check max-attempts to prevent brute force
                     if (otpEntity.getAttemptCount() >= MAX_ATTEMPTS) {
+                        System.out.println("[OTP] Max attempts reached for: " + target);
                         return false;
                     }
 
@@ -73,12 +81,14 @@ public class OtpServiceImpl implements OtpService {
                     // Check expiry
                     if (otpEntity.getExpiryTime().isBefore(LocalDateTime.now())) {
                         otpRepository.save(otpEntity);
+                        System.out.println("[OTP] Expired OTP attempt for: " + target);
                         return false;
                     }
 
                     // Mark OTP as used so it cannot be replayed
                     otpEntity.setIsUsed(true);
                     otpRepository.save(otpEntity);
+                    System.out.println("[OTP] OTP verified successfully for: " + target);
                     return true;
                 }).orElse(false);
     }
